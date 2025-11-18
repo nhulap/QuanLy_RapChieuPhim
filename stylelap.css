@@ -1,0 +1,154 @@
+/* CSS Reset và Cài đặt chung */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0; /* Màu nền nhẹ */
+}
+.wrapper {
+  width: 100%;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- HEADER --- */
+.header {
+  height: 120px;
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+.logo {
+  font-size: 36px;
+  font-weight: bold;
+  color: #d11e3b; /* Màu đỏ CGV */
+  text-transform: uppercase;
+}
+
+/* --- MENU --- */
+.menu {
+  height: 50px;
+  width: 100%;
+  background-color: #d11e3b; /* Màu đỏ đặc trưng của CGV */
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start; /* Căn trái các mục menu */
+}
+
+.menu li {
+  padding: 0 15px;
+}
+
+.menu li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 15px 5px;
+  transition: background-color 0.3s;
+}
+
+.menu li a:hover {
+  background-color: #a3182d;
+}
+
+/* --- MAIN CONTENT --- */
+.main {
+  min-height: 400px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+/* 1. CSS cho Grid View (Phần chứa các Card phim) */
+.movie-grid {
+  display: grid;
+  /* Tạo 4 cột có chiều rộng bằng nhau */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding-top: 10px;
+}
+
+/* 2. CSS cho Card Phim (Movie Card) */
+.movie-card {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.movie-poster {
+  width: 100%;
+  /* Tỉ lệ 3:4 cho poster phim */
+  aspect-ratio: 3 / 4;
+  display: block;
+  object-fit: cover;
+}
+
+.movie-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.movie-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #333;
+  height: 40px; /* Chiều cao cố định cho tên phim */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movie-info .btn-buy {
+  display: inline-block;
+  background-color: #d11e3b; /* Màu đỏ CGV */
+  color: white;
+  padding: 8px 15px;
+  border-radius: 3px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 5px;
+  transition: background-color 0.2s;
+}
+
+.movie-info .btn-buy:hover {
+  background-color: #a3182d;
+}
+
+.movie-info .btn-buy.disabled {
+  background-color: #808080; /* Màu xám cho phim sắp chiếu */
+  cursor: default;
+}
+
+/* --- FOOTER --- */
+.footer {
+  height: 100px;
+  width: 100%;
+  background-color: #222;
+  color: #ccc;
+  padding: 20px 0;
+  text-align: center;
+  font-size: 12px;
+  box-sizing: border-box;
+}

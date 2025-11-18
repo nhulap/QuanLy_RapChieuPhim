@@ -1,0 +1,110 @@
+<?php
+session_start();
+require "../Connection.php"; 
+
+$ma_suat = $_GET['MaSuatChieu'] ?? die("Thiếu Mã Suất Chiếu.");
+$ma_phim = $_GET['MaPhim'] ?? die("Thiếu Mã Phim.");
+
+$ma_suat_safe = mysqli_real_escape_string($conn, $ma_suat);
+$ma_phim_safe = mysqli_real_escape_string($conn, $ma_phim);
+
+// 1. Lấy thông tin phim và suất chiếu
+$sql_info = "SELECT P.TenPhim, R.TenRap, PCH.TenPhong, SC.ThoiGianBatDau, SC.GiaVeCoBan
+             FROM suatchieu SC
+             JOIN phim P ON SC.MaPhim = P.MaPhim
+             JOIN phongchieu PCH ON SC.MaPhong = PCH.MaPhong
+             JOIN rapchieu R ON PCH.MaRap = R.MaRap
+             WHERE SC.MaSuatChieu = '$ma_suat_safe'";
+$info = mysqli_fetch_assoc(mysqli_query($conn, $sql_info));
+$ten_phim = $info['TenPhim'] ?? 'Phim';
+
+// 2. Lấy ghế đã đặt
+$sql_dat = "SELECT MaGhe FROM chitietve WHERE MaSuatChieu = '$ma_suat_safe'";
+$result_dat = mysqli_query($conn, $sql_dat);
+$ghe_da_dat = array_column(mysqli_fetch_all($result_dat, MYSQLI_ASSOC), 'MaGhe');
+
+// 3. Lấy tất cả ghế trong phòng
+$sql_ghe = "SELECT G.MaGhe, G.SoGhe, G.LoaiGhe
+            FROM ghe G
+            JOIN suatchieu SC ON G.MaPhong = SC.MaPhong
+            WHERE SC.MaSuatChieu = '$ma_suat_safe'
+            ORDER BY G.SoGhe";
+$result_ghe = mysqli_query($conn, $sql_ghe);
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2. Chọn Ghế - <?php echo $ten_phim; ?></title>
+    <style>
+        .seat { display: inline-block; width: 40px; height: 40px; line-height: 40px; text-align: center; margin: 5px; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; transition: all 0.2s; font-size: 0.8em; }
+        .available { background: #5cb85c; color: white; }
+        .selected { background: #337ab7; color: white; transform: scale(1.1); }
+        .booked { background: #d9534f; color: white; cursor: not-allowed; opacity: 0.6; }
+        .screen { background: #333; color: white; padding: 10px; text-align: center; margin-bottom: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🎬 Đặt Vé: <?php echo htmlspecialchars($ten_phim); ?></h1>
+    <p>Rạp: <?php echo htmlspecialchars($info['TenRap']); ?> | Phòng: <?php echo htmlspecialchars($info['TenPhong']); ?> | Thời gian: <?php echo date('H:i d/m/Y', strtotime($info['ThoiGianBatDau'])); ?></p>
+    
+    <div class="screen">MÀN HÌNH</div>
+
+    <form method="POST" action="thanh_toan.php">
+        <input type="hidden" name="MaSuatChieu" value="<?php echo htmlspecialchars($ma_suat); ?>">
+        <div class="seat-map">
+            <?php while ($ghe = mysqli_fetch_assoc($result_ghe)): ?>
+                <?php
+                    $is_booked = in_array($ghe['MaGhe'], $ghe_da_dat);
+                    $class = $is_booked ? 'booked' : 'available';
+                    $price_attr = $info['GiaVeCoBan'] ?? 90000;
+                ?>
+                <label class="seat <?php echo $class; ?>">
+                    <?php if (!$is_booked): ?>
+                        <input type="checkbox" name="selected_seats[]" value="<?php echo htmlspecialchars($ghe['MaGhe']); ?>" style="display: none;" 
+                                data-price="<?php echo $price_attr; ?>">
+                    <?php endif; ?>
+                    <?php echo htmlspecialchars($ghe['SoGhe']); ?>
+                </label>
+            <?php endwhile; ?>
+        </div>
+
+        <hr>
+        <h3>Tổng Tiền Tạm Tính: <span id="total_display">0</span> VND</h3>
+        <button type="submit" id="btn-continue" disabled>Tiếp tục Thanh toán</button>
+    </form>
+    
+    <script>
+        const totalDisplay = document.getElementById('total_display');
+        const btnContinue = document.getElementById('btn-continue');
+        let currentTotal = 0;
+
+        document.querySelectorAll('.seat.available').forEach(seat => {
+            seat.addEventListener('click', function(e) {
+                const checkbox = this.querySelector('input[type="checkbox"]');
+                const price = parseFloat(checkbox.getAttribute('data-price'));
+                
+                // Toggle checked state
+                checkbox.checked = !checkbox.checked;
+
+                if (checkbox.checked) {
+                    this.classList.remove('available');
+                    this.classList.add('selected');
+                    currentTotal += price;
+                } else {
+                    this.classList.remove('selected');
+                    this.classList.add('available');
+                    currentTotal -= price;
+                }
+
+                // Cập nhật hiển thị
+                totalDisplay.textContent = currentTotal.toLocaleString('vi-VN');
+                
+                // Kích hoạt/Vô hiệu hóa nút tiếp tục
+                btnContinue.disabled = currentTotal === 0;
+            });
+        });
+    </script>
+</body>
+</html>
+<?php mysqli_close($conn); ?>

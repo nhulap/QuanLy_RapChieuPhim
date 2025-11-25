@@ -15,21 +15,52 @@ $sql_info = "SELECT P.TenPhim, R.TenRap, PCH.TenPhong, SC.ThoiGianBatDau, SC.Gia
              JOIN phongchieu PCH ON SC.MaPhong = PCH.MaPhong
              JOIN rapchieu R ON PCH.MaRap = R.MaRap
              WHERE SC.MaSuatChieu = '$ma_suat_safe'";
-$info = mysqli_fetch_assoc(mysqli_query($conn, $sql_info));
+             
+$result_info = mysqli_query($conn, $sql_info);
+if ($result_info === false) {
+    die("Lỗi truy vấn thông tin suất chiếu: " . mysqli_error($conn));
+}
+$info = mysqli_fetch_assoc($result_info);
 $ten_phim = $info['TenPhim'] ?? 'Phim';
 
-// 2. Lấy ghế đã đặt
-$sql_dat = "SELECT MaGhe FROM chitietve WHERE MaSuatChieu = '$ma_suat_safe'";
-$result_dat = mysqli_query($conn, $sql_dat);
-$ghe_da_dat = array_column(mysqli_fetch_all($result_dat, MYSQLI_ASSOC), 'MaGhe');
+// =======================================================
+// ⭐ PHẦN SỬA ĐỔI CHÍNH: Lấy ghế đã đặt từ cột MaGheDaChon trong bảng DATVE
+// =======================================================
+$sql_dat = "SELECT MaGheDaChon FROM datve WHERE MaSuatChieu = '$ma_suat_safe' AND TrangThaiThanhToan = 'ThanhCong'";
+$result_dat = mysqli_query($conn, $sql_dat); 
+
+if ($result_dat === false) {
+    die("Lỗi truy vấn ghế đã đặt: " . mysqli_error($conn) . " | SQL: " . $sql_dat);
+}
+
+// Khởi tạo mảng chứa các mã ghế đã đặt
+$ghe_da_dat = []; 
+
+if (mysqli_num_rows($result_dat) > 0) {
+    while($row = mysqli_fetch_assoc($result_dat)) {
+        if (!empty($row['MaGheDaChon'])) {
+            // Tách chuỗi ghế (ví dụ: "G01,G02") thành mảng và gộp vào $ghe_da_dat
+            $ghe_da_dat = array_merge($ghe_da_dat, explode(',', $row['MaGheDaChon']));
+        }
+    }
+}
+// Dọn dẹp mảng (loại bỏ khoảng trắng, giá trị rỗng)
+$ghe_da_dat = array_map('trim', $ghe_da_dat);
+$ghe_da_dat = array_filter($ghe_da_dat); 
 
 // 3. Lấy tất cả ghế trong phòng
 $sql_ghe = "SELECT G.MaGhe, G.SoGhe, G.LoaiGhe
-            FROM ghe G
-            JOIN suatchieu SC ON G.MaPhong = SC.MaPhong
-            WHERE SC.MaSuatChieu = '$ma_suat_safe'
-            ORDER BY G.SoGhe";
+             FROM ghe G
+             JOIN suatchieu SC ON G.MaPhong = SC.MaPhong
+             WHERE SC.MaSuatChieu = '$ma_suat_safe'
+             ORDER BY G.SoGhe";
+             
 $result_ghe = mysqli_query($conn, $sql_ghe);
+
+if ($result_ghe === false) {
+    die("Lỗi truy vấn tất cả ghế: " . mysqli_error($conn));
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +86,7 @@ $result_ghe = mysqli_query($conn, $sql_ghe);
         <div class="seat-map">
             <?php while ($ghe = mysqli_fetch_assoc($result_ghe)): ?>
                 <?php
+                    // Kiểm tra ghế này có nằm trong danh sách ghế đã đặt $ghe_da_dat không
                     $is_booked = in_array($ghe['MaGhe'], $ghe_da_dat);
                     $class = $is_booked ? 'booked' : 'available';
                     $price_attr = $info['GiaVeCoBan'] ?? 90000;

@@ -1,154 +1,350 @@
-/* CSS Reset và Cài đặt chung */
+/* ======================================================= */
+/* I. CSS RESET VÀ CÀI ĐẶT CHUNG (Từ Index) */
+/* ======================================================= */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0; /* Màu nền nhẹ */
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Màu nền nhẹ */
 }
 .wrapper {
-  width: 100%;
-  margin: 0 auto;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%; /* Điều chỉnh width để nội dung nằm gọn hơn */
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 100vh; /* Đảm bảo wrapper chiếm toàn bộ chiều cao màn hình */
+    display: flex;
+    flex-direction: column;
+}
+/* Tiêu đề chung */
+h1, h2 {
+    color: #d11e3b; /* Đồng bộ màu CGV cho tiêu đề */
 }
 
 /* --- HEADER --- */
 .header {
-  height: 120px;
-  width: 100%;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 0;
+    height: 120px;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
 }
 .logo {
-  font-size: 36px;
-  font-weight: bold;
-  color: #d11e3b; /* Màu đỏ CGV */
-  text-transform: uppercase;
+    font-size: 36px;
+    font-weight: bold;
+    color: #d11e3b; /* Màu đỏ CGV */
+    text-transform: uppercase;
 }
 
 /* --- MENU --- */
 .menu {
-  height: 50px;
-  width: 100%;
-  background-color: #d11e3b; /* Màu đỏ đặc trưng của CGV */
+    height: 50px;
+    width: 100%;
+    background-color: #d11e3b; /* Màu đỏ đặc trưng của CGV */
 }
 
 .menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: flex-start; /* Căn trái các mục menu */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start; /* Căn trái các mục menu */
 }
 
 .menu li {
-  padding: 0 15px;
+    padding: 0 15px;
 }
 
 .menu li a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  font-size: 14px;
-  text-transform: uppercase;
-  padding: 15px 5px;
-  transition: background-color 0.3s;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 15px 5px;
+    transition: background-color 0.3s;
 }
 
 .menu li a:hover {
-  background-color: #a3182d;
+    background-color: #a3182d;
 }
 
 /* --- MAIN CONTENT --- */
 .main {
-  min-height: 400px;
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #fff;
-}
-
-/* 1. CSS cho Grid View (Phần chứa các Card phim) */
-.movie-grid {
-  display: grid;
-  /* Tạo 4 cột có chiều rộng bằng nhau */
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding-top: 10px;
-}
-
-/* 2. CSS cho Card Phim (Movie Card) */
-.movie-card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.movie-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.movie-poster {
-  width: 100%;
-  /* Tỉ lệ 3:4 cho poster phim */
-  aspect-ratio: 3 / 4;
-  display: block;
-  object-fit: cover;
-}
-
-.movie-info {
-  padding: 10px;
-  text-align: center;
-}
-
-.movie-info h4 {
-  margin: 0 0 5px 0;
-  font-size: 16px;
-  color: #333;
-  height: 40px; /* Chiều cao cố định cho tên phim */
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.movie-info .btn-buy {
-  display: inline-block;
-  background-color: #d11e3b; /* Màu đỏ CGV */
-  color: white;
-  padding: 8px 15px;
-  border-radius: 3px;
-  text-decoration: none;
-  font-weight: bold;
-  margin-top: 5px;
-  transition: background-color 0.2s;
-}
-
-.movie-info .btn-buy:hover {
-  background-color: #a3182d;
-}
-
-.movie-info .btn-buy.disabled {
-  background-color: #808080; /* Màu xám cho phim sắp chiếu */
-  cursor: default;
+    flex-grow: 1; /* Quan trọng: làm cho phần main mở rộng để đẩy footer xuống dưới */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
 /* --- FOOTER --- */
 .footer {
-  height: 100px;
-  width: 100%;
-  background-color: #222;
-  color: #ccc;
-  padding: 20px 0;
-  text-align: center;
-  font-size: 12px;
-  box-sizing: border-box;
+    height: 100px;
+    width: 100%;
+    background-color: #222;
+    color: #ccc;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 12px;
+    box-sizing: border-box;
+    margin-top: auto; /* Quan trọng: Đẩy footer xuống cuối wrapper */
+}
+
+/* ======================================================= */
+/* II. CSS CHO TRANG INDEX (Movie Grid) */
+/* ======================================================= */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding-top: 10px;
+}
+.movie-link {
+    text-decoration: none; 
+    color: inherit;
+}
+.movie-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+.movie-poster {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display: block;
+    object-fit: cover;
+}
+.movie-info {
+    padding: 10px;
+    text-align: center;
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.movie-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+    min-height: 40px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.movie-info .btn-buy {
+    display: inline-block;
+    background-color: #d11e3b; 
+    color: white;
+    padding: 8px 15px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px; 
+    transition: background-color 0.2s;
+}
+.movie-info .btn-buy:hover {
+    background-color: #a3182d;
+}
+.movie-info .btn-buy.disabled {
+    background-color: #808080; 
+    cursor: default;
+}
+
+/* ======================================================= */
+/* III. CSS CHO CHI TIẾT PHIM (chi_tiet_phim.php) */
+/* ======================================================= */
+.movie-detail-container { 
+    display: flex; 
+    gap: 30px; 
+    padding: 20px; 
+    border: 1px solid #ccc; 
+    background-color: #f9f9f9; 
+    border-radius: 8px; 
+}
+.detail-poster { 
+    flex-shrink: 0; 
+    width: 300px; 
+    height: 450px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+}
+.detail-info h1 { 
+    color: #d11e3b; 
+    margin-top: 0; 
+    border-bottom: 2px solid #ccc; 
+    padding-bottom: 10px; 
+}
+.detail-info p { 
+    line-height: 1.6; 
+    margin-bottom: 10px; 
+    font-size: 0.95em;
+}
+.detail-info strong { 
+    display: inline-block; 
+    width: 120px; 
+    color: #333; 
+}
+.description { 
+    margin-top: 20px; 
+    border-top: 1px dashed #ccc; 
+    padding-top: 15px; 
+}
+.btn-buy-detail, .btn-login-prompt {
+    display: inline-block; padding: 10px 25px; 
+    background-color: #d11e3b; 
+    color: white; 
+    text-decoration: none; 
+    border-radius: 5px; 
+    margin-top: 20px; 
+    font-size: 1.1em; 
+    transition: background-color 0.3s;
+}
+.btn-buy-detail:hover, .btn-login-prompt:hover { 
+    background-color: #a3182d; 
+}
+.btn-login-prompt { background-color: #337ab7; } 
+.debug-info { color: #007bff; margin-bottom: 15px; font-weight: bold; }
+
+/* ======================================================= */
+/* IV. CSS CHO CHỌN SUẤT (chon_rap_suat.php) */
+/* ======================================================= */
+.showtimes-table { 
+    width: 100%; 
+    max-width: 900px; 
+    border-collapse: collapse; 
+    margin: 20px auto; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.showtimes-table th, .showtimes-table td { 
+    border: 1px solid #ddd; 
+    padding: 12px; 
+    text-align: left; 
+}
+.showtimes-table th { 
+    background-color: #d11e3b; 
+    color: white;
+    font-weight: bold;
+}
+.showtimes-table tr:nth-child(even) {
+    background-color: #f9f9f9; 
+}
+.btn-select { 
+    background-color: #337ab7; 
+    color: white; 
+    padding: 8px 15px; 
+    text-decoration: none; 
+    border-radius: 5px; 
+    display: inline-block; 
+    transition: background-color 0.3s;
+}
+.btn-select:hover {
+    background-color: #286090;
+}
+
+/* ======================================================= */
+/* V. CSS CHO CHỌN GHẾ (chon_ghe.php) */
+/* ======================================================= */
+.seat { 
+    display: inline-block; width: 40px; height: 40px; line-height: 40px; text-align: center; margin: 5px; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; transition: all 0.2s; font-size: 0.8em; 
+}
+.available { 
+    background: #5cb85c; color: white; 
+}
+.selected { 
+    background: #337ab7; color: white; transform: scale(1.1); 
+}
+.booked { 
+    background: #d9534f; color: white; cursor: not-allowed; opacity: 0.6; 
+}
+.screen { 
+    background: #333; color: white; padding: 10px; text-align: center; margin-bottom: 20px; font-weight: bold; 
+}
+
+/* ======================================================= */
+/* VI. CSS CHO THANH TOÁN (thanh_toan.php) */
+/* ======================================================= */
+.payment-summary {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.payment-summary table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.payment-summary table td {
+    padding: 10px;
+    border: 1px solid #eee;
+}
+.payment-methods label {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.payment-methods label:hover {
+    background-color: #f1f1f1;
+}
+.payment-methods input[type="radio"]:disabled + span {
+    color: #888;
+}
+.payment-methods input[type="radio"]:disabled {
+    cursor: not-allowed;
+}
+#btn-confirm {
+    width: 100%;
+    padding: 15px 20px;
+    background: #d11e3b; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+#btn-confirm:hover {
+    background: #a3182d;
+}
+.promo-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.promo-form input[type="text"] {
+    padding: 10px;
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.promo-form button {
+    padding: 10px 20px;
+    background: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }

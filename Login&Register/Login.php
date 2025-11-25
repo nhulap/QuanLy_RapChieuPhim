@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             $row = mysqli_fetch_assoc($result);
 
             if ($row['MatKhau'] === $pass) {
-
+                $_SESSION['logged_in'] = true;
                 $_SESSION['user'] = $row['HoTen'];
                 $_SESSION['user_id'] = $row['MaKhachHang'];
 
@@ -58,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
     <h1>Đăng nhập tài khoản</h1>
     <div class="container_register">
-        <form action="" method="post" id="form_login">
+        <form action="" method="post" id="form_login"> 
             <div>
                 <input type="text" name="name" placeholder="Tên tài khoản hoặc email" 
                 value="<?php echo htmlspecialchars($_POST['name'] ?? '') ?>">
@@ -73,7 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                     <input type="submit" name="nut_dk" value="Đăng ký">
                 </div>
             </div>
-
         </form>
     </div>
 

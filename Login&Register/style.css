@@ -1,28 +1,56 @@
-*{
+/* =======================================
+   1. CÀI ĐẶT CHUNG (RESET & BASE)
+   ======================================= */
+* {
+    /* Reset margin, padding và áp dụng Box Sizing */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    text-align: center;
+    /* Lưu ý: Thuộc tính text-align: center; ở đây có thể gây khó khăn 
+       cho các thẻ input/text, nên thường chỉ đặt cho các khu vực cụ thể.
+       Tôi đã di chuyển text-align: center; xuống body và các form. */
 }
 
-body{
-    background-color: rgb(229, 225, 219);
+body {
+    /* Sử dụng background-color từ form/register */
+    background-color: rgb(229, 225, 219); 
+    font-family: Arial, sans-serif; /* Font chung cho toàn trang */
+    text-align: center; /* Áp dụng căn giữa cho nội dung trang */
 }
 
-/* CSS đăng ký */
-h1{
-    margin-top: 2%;
-    font-family:   monospace;
+
+/* Kiểu chữ tiêu đề chung */
+h1 {
+    margin-top: 5%;
+    font-family: monospace;
     font-size: 37px;
 }
-.container_register{
+
+/* Kiểu cho Input chung */
+input {
+    font-size: medium;
+    /* Căn chỉnh chung cho tất cả input */
+}
+
+input:not([type="submit"]) {
+    text-align: left; /* Căn trái cho các ô nhập liệu (ngoại trừ nút Submit) */
+}
+
+input::placeholder {
+    padding-left: 3%;
+}
+
+/* =======================================
+   2. TRANG ĐĂNG KÝ (REGISTER)
+   ======================================= */
+.container_register {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 70vh;
 }
 
-#form_register{
+#form_register {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -34,28 +62,20 @@ h1{
     height: 70vh;
 }
 
-#form_register input{
+#form_register input {
     width: 60%;
     height: 7vh;
     border-radius: 13px;
 }
-input:not([type="submit"]){
-    text-align: left;
-}
-input{
-    font-size: medium;
-}
-input::placeholder{
-    padding-left: 3%;
-}
 
-#submit_regis{
+#submit_regis {
     display: flex;
     align-items: center;
     width: 50%;
     margin: 0 23%;
 }
-#btn_dn{
+
+#btn_dn {
     width: 60%;
     display: flex;
     flex-direction: column;
@@ -64,19 +84,24 @@ input::placeholder{
     text-align: center;
     margin-top: -4%;
 }
-#btn_dn input, #btn_dn p{
+/* Sửa lại căn chỉnh cho input/p trong #btn_dn */
+#btn_dn input, #btn_dn p { 
     width: 100%;
     text-align: center;
-    margin-left: 40%;
+    margin-left: 0; /* Bỏ margin-left 40% để nó căn giữa/căn chỉnh theo flexbox */
 }
-#submit_regis input:hover{
+
+#submit_regis input:hover,
+#sub_login input:hover { /* Gộp hover của 2 nút submit */
     color: white;
     background-color: rgb(45, 42, 42);
     font-size: medium;
 }
 
-/* CSS đăng nhập */
-#form_login{
+/* =======================================
+   3. TRANG ĐĂNG NHẬP (LOGIN)
+   ======================================= */
+#form_login {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -86,21 +111,173 @@ input::placeholder{
     gap: 5%;
     width: 60%;
     height: 50vh;
+    /* Đảm bảo container_register có thể dùng cho login */
 }
-#form_login input{
+
+#form_login input {
     width: 60%;
     height: 7vh;
     border-radius: 13px;
 }
-#sub_login{
+
+#sub_login {
     display: flex;
     align-items: center;
     width: 55%;
     margin: 0 32%;
     margin-top: 5%;
 }
-#sub_login input:hover{
+
+/* =======================================
+   4. CẤU TRÚC TRANG CHỦ (WRAPPER, HEADER, FOOTER)
+   ======================================= */
+
+.wrapper {
+    /* Đặt wrapper ở độ ưu tiên thấp hơn các form độc lập */
+    width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- HEADER --- */
+.header {
+    height: 120px;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+}
+.logo {
+    font-size: 36px;
+    font-weight: bold;
+    color: #d11e3b; 
+    text-transform: uppercase;
+}
+
+/* --- MENU --- */
+.menu {
+    height: 50px;
+    width: 100%;
+    background-color: #d11e3b; 
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start; 
+}
+
+.menu li {
+    padding: 0 15px;
+}
+
+.menu li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 15px 5px;
+    transition: background-color 0.3s;
+}
+
+.menu li a:hover {
+    background-color: #a3182d;
+}
+
+/* =======================================
+   5. KHU VỰC CHÍNH (MAIN CONTENT)
+   ======================================= */
+.main {
+    min-height: 400px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* Grid View */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding-top: 10px;
+}
+
+/* Movie Card */
+.movie-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.movie-poster {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display: block;
+    object-fit: cover;
+}
+
+.movie-info {
+    padding: 10px;
+    text-align: center;
+}
+
+.movie-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+    height: 40px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Nút Mua vé / Sắp chiếu */
+.movie-info .btn-buy {
+    display: inline-block;
+    background-color: #d11e3b; 
     color: white;
-    background-color: rgb(45, 42, 42);
-    font-size: medium;
+    padding: 8px 15px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+
+.movie-info .btn-buy:hover {
+    background-color: #a3182d;
+}
+
+.movie-info .btn-buy.disabled {
+    background-color: #808080; 
+    cursor: default;
+}
+
+/* --- FOOTER --- */
+.footer {
+    height: 100px;
+    width: 100%;
+    background-color: #222;
+    color: #ccc;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 12px;
+    box-sizing: border-box;
 }

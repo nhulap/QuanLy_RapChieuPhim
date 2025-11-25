@@ -3,26 +3,16 @@
 session_start(); 
 require "../Connection.php"; // Kết nối CSDL
 
-// =======================================================
-// ⭐ PHẦN SỬA LẠI: GÁN CỨNG MÃ KHÁCH HÀNG ĐỂ THỬ NGHIỆM
-// =======================================================
-$ma_khach_hang_set_cung = 'KH1001'; // <-- ĐIỀN MÃ KHÁCH HÀNG CỦA BẠN VÀO ĐÂY
-$_SESSION['MaKhachHang'] = $ma_khach_hang_set_cung; 
-// =======================================================
-
-
 // Kiểm tra xem MaPhim có được truyền qua URL không
 if (!isset($_GET['MaPhim']) || empty($_GET['MaPhim'])) {
     // Giả định nếu không có MaPhim, chuyển hướng về trang chủ
-    header("Location: index.php"); 
+    header("Location: ../index.php"); // Chuyển hướng về index.php ở thư mục cha
     exit();
 }
-
 // Lấy MaPhim từ URL và làm sạch dữ liệu
 $ma_phim = mysqli_real_escape_string($conn, $_GET['MaPhim']);
-
-// Lấy MaKhachHang từ Session (ĐÃ ĐƯỢC SET CỨNG ở trên)
-$ma_khach_hang = $_SESSION['MaKhachHang'] ?? 'GUEST';
+// Lấy MaKhachHang từ Session (sử dụng user_id từ file Login.php)
+$ma_khach_hang = $_SESSION['user_id'] ?? 'GUEST'; // Nếu chưa đăng nhập thì là GUEST
 
 // Truy vấn lấy TẤT CẢ thông tin chi tiết của phim
 $sql_detail = "SELECT * FROM phim WHERE MaPhim = '$ma_phim'";
@@ -75,12 +65,12 @@ if (mysqli_num_rows($result_detail) == 0) {
             
             <?php if ($phim): ?>
 
-            <p class="debug-info">Đang Đăng Nhập với Mã Khách Hàng: <?php echo htmlspecialchars($ma_khach_hang); ?></p> 
+            <p class="debug-info">Trạng thái: Khách hàng **<?php echo htmlspecialchars($ma_khach_hang); ?>**</p> 
             
             <div class="movie-detail-container">
                 <img src="<?php echo htmlspecialchars($phim['Hinhanh']); ?>" 
-                     alt="<?php echo htmlspecialchars($phim['TenPhim']); ?>" 
-                     class="detail-poster">
+                    alt="<?php echo htmlspecialchars($phim['TenPhim']); ?>" 
+                    class="detail-poster">
                 
                 <div class="detail-info">
                     <h1><?php echo htmlspecialchars($phim['TenPhim']); ?></h1>
@@ -98,9 +88,16 @@ if (mysqli_num_rows($result_detail) == 0) {
                     </p>
                     <p><strong>Ngôn Ngữ:</strong> <?php echo htmlspecialchars($phim['NgonNgu']); ?></p>
                     
-                    <a href="chon_rap_suat.php?MaPhim=<?php echo urlencode($ma_phim); ?>" class="btn-buy-detail">
-                        MUA VÉ XEM PHIM
-                    </a>
+                    <?php if ($ma_khach_hang == 'GUEST'): ?>
+                        <a href="../Login&Register/Login.php" class="btn-login-prompt">
+                            ĐĂNG NHẬP ĐỂ MUA VÉ
+                        </a>
+                    <?php else: ?>
+                        <a href="chon_rap_suat.php?MaPhim=<?php echo urlencode($ma_phim); ?>" class="btn-buy-detail">
+                            MUA VÉ XEM PHIM
+                        </a>
+                    <?php endif; ?>
+                    
 
                     <div class="description">
                         <h3>Tóm Tắt Nội Dung</h3>

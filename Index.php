@@ -18,15 +18,13 @@ $today = date('Y-m-d');
     <link rel="stylesheet" href="<?php echo $css_path; ?>">
     <title><?php echo $page_title; ?></title>
 
-    <!-- Carousel CSS -->
     <style>
-        /* ===== FIXED SIDE BANNERS ===== */
 .side-banner {
     position: fixed;
     top: 0px;
     width: 180px;
     height: 350px;
-    z-index: 5;
+    z-index: 500;
 }
 
 .side-banner img {
@@ -37,12 +35,11 @@ $today = date('Y-m-d');
     box-shadow: 0 0 8px rgba(0,0,0,0.4);
 }
 
-/* bên trái */
 .side-banner.left {
     left: 10px;
 }
 
-/* bên phải */
+
 .side-banner.right {
     right: 10px;
 }
@@ -111,7 +108,6 @@ $today = date('Y-m-d');
 </head>
 
 <body>
-    <!-- ⭐ Banner 2 bên giống CGV -->
 <div class="side-banner left">
     <a href="#">
         <img src="./image_rapchieuphim/sidebar.png" alt="Banner Trái">
@@ -131,7 +127,6 @@ $today = date('Y-m-d');
         
         <div class="main">
 
-            <!-- ⭐ CAROUSEL PHIM ĐANG CHIẾU -->
             <div class="carousel-container">
 
                 <button class="carousel-btn left" onclick="moveLeft()">&#8249;</button>
@@ -215,7 +210,6 @@ $today = date('Y-m-d');
 if (isset($conn)) { mysqli_close($conn); }
 ?>
 
-<!-- ⭐ JS CAROUSEL -->
 <script>
     const track = document.getElementById("carouselTrack");
     const items = document.querySelectorAll('.carousel-item');
@@ -236,7 +230,6 @@ if (isset($conn)) { mysqli_close($conn); }
         scrollToSlide((currentIndex + 1) % items.length);
     }
 
-    // Tự động chạy carousel - chuyển sang ảnh tiếp theo mỗi 5 giây
     setInterval(() => {
         moveRight();
     }, 5000);

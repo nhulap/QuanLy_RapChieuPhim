@@ -493,3 +493,232 @@ h1, h2 {
     letter-spacing: 3px;
     text-transform: uppercase;
 }
+
+/* ======================================================= */
+/* RESPONSIVE DESIGN */
+/* ======================================================= */
+
+/* Tablets - 768px and below */
+@media (max-width: 768px) {
+    .wrapper {
+        width: 95%;
+        max-width: 100%;
+    }
+
+    .header {
+        height: 100px;
+        padding: 5px 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .menu {
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+
+    .menu ul {
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+
+    .menu li {
+        padding: 0 8px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .menu li a {
+        font-size: 11px;
+        padding: 10px 3px;
+    }
+
+    .content-container {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        width: calc(100% - 150px);
+        margin: 0 auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .side-banner {
+        width: 60px;
+        height: auto;
+        top: 200px;
+    }
+
+    .side-banner img {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+    }
+
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .carousel-container {
+        max-width: 100%;
+        margin: 20px 0;
+    }
+
+    .carousel-item img {
+        height: 250px;
+    }
+
+    .carousel-btn {
+        top: 35%;
+        width: 35px;
+        height: 35px;
+        padding: 8px 10px;
+        font-size: 18px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
+
+/* Mobile - 480px and below */
+@media (max-width: 480px) {
+    .wrapper {
+        width: 100%;
+        max-width: 100%;
+        box-shadow: none;
+    }
+
+    .header {
+        height: 80px;
+        padding: 5px 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .menu {
+        height: 40px;
+        top: 90px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+
+    .menu li {
+        padding: 0 5px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .menu li a {
+        font-size: 10px;
+        padding: 8px 2px;
+    }
+
+    .content-container {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        width: 100%;
+        margin: 0;
+    }
+
+    .main {
+        width: 100%;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: 150px;
+    }
+
+    .side-banner {
+        display: none;
+    }
+
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .movie-card {
+        border-radius: 3px;
+    }
+
+    .movie-poster {
+        aspect-ratio: 3 / 4;
+    }
+
+    .movie-info h4 {
+        font-size: 12px;
+        min-height: 30px;
+    }
+
+    .btn-buy {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .carousel-container {
+        max-width: 100%;
+        padding: 10px 0;
+        margin: 10px 0;
+    }
+
+    .carousel-track {
+        height: auto;
+    }
+
+    .carousel-item img {
+        height: 180px;
+    }
+
+    .carousel-btn {
+        top: 35%;
+        width: 30px;
+        height: 30px;
+        padding: 5px 8px;
+        font-size: 16px;
+    }
+
+    .carousel-btn.left {
+        left: 5px;
+    }
+
+    .carousel-btn.right {
+        right: 5px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin: 15px 0 10px 0;
+    }
+
+    .carousel-text {
+        font-size: 18px;
+        margin: 15px 0;
+        letter-spacing: 1px;
+    }
+
+    .footer {
+        height: auto;
+        padding: 15px 10px;
+        font-size: 11px;
+    }
+}

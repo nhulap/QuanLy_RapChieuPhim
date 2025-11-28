@@ -17,7 +17,7 @@
         <div class="menu">
             <ul>
                 <li><a href="../index.php">Trang chủ</a></li>
-                <li><a href="#">Phim</a></li>
+                <li><a href="./phim/phimdangchieu.php">Phim</a></li>
                 <li><a href="#">Rạp/Giá vé</a></li>
 
                 <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>

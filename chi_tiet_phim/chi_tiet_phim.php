@@ -112,9 +112,6 @@ if (mysqli_num_rows($result_detail) == 0) {
             
         </div>
         
-        <div class="footer">
-            <p>&copy; 2025 CJ CGV VIETNAM. All rights reserved.</p>
-        </div>
     </div>
 
 <?php

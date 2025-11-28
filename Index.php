@@ -1,39 +1,169 @@
 <?php
-// ⭐ BƯỚC 1: BẮT ĐẦU SESSION VÀ KẾT NỐI CSDL
 session_start();
-
-// Kết nối CSDL (Giả sử Connection.php nằm cùng cấp)
 require "Connection.php";
 
-// Định nghĩa biến để truyền vào header
 $page_title = "Trang chủ - CGV";
-$css_path = 'stylelap.css'; // Đường dẫn đến CSS từ index.php
+$css_path = 'stylelap.css';
 
-// Nhúng Header (Mở thẻ HTML, header, menu, và div.main)
 require_once 'layout/header.php'; 
 
-// Các biến cần thiết cho nội dung chính
 $today = date('Y-m-d');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo $css_path; ?>"> 
-    
+    <link rel="stylesheet" href="<?php echo $css_path; ?>">
     <title><?php echo $page_title; ?></title>
+
+    <!-- Carousel CSS -->
+    <style>
+        /* ===== FIXED SIDE BANNERS ===== */
+.side-banner {
+    position: fixed;
+    top: 0px;
+    width: 180px;
+    height: 350px;
+    z-index: 5;
+}
+
+.side-banner img {
+    width: 100%;
+    height: 950px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.4);
+}
+
+/* bên trái */
+.side-banner.left {
+    left: 10px;
+}
+
+/* bên phải */
+.side-banner.right {
+    right: 10px;
+}
+
+        .carousel-container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .carousel-title {
+            text-align: center;
+            font-size: 34px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .carousel-track {
+            display: flex;
+            overflow: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            margin-right: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform .3s;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 45%;
+            transform: translateY(-50%);
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn.left { left: -20px; }
+        .carousel-btn.right { right: -20px; }
+
+        .carousel-btn:hover {
+            background: #b30000;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="wrapper">
-        
+    <!-- ⭐ Banner 2 bên giống CGV -->
+<div class="side-banner left">
+    <a href="#">
+        <img src="./image_rapchieuphim/sidebar.png" alt="Banner Trái">
+    </a>
+</div>
+
+<div class="side-banner right">
+    <a href="#">
+        <img src="./image_rapchieuphim/sidebar.png" alt="Banner Phải">
+    </a>
+</div>
+
+
+
+<div class="wrapper">
+    <div class="content-container">
         
         <div class="main">
+
+            <!-- ⭐ CAROUSEL PHIM ĐANG CHIẾU -->
+            <div class="carousel-container">
+
+                <button class="carousel-btn left" onclick="moveLeft()">&#8249;</button>
+                <div class="carousel-track" id="carouselTrack">
+
+                    <?php
+                    $banners = array(
+                        array('image' => 'image_rapchieuphim/banner.jpg', 'link' => '#'),
+                        array('image' => 'image_rapchieuphim/banner2.jpg', 'link' => '#'),
+                        array('image' => 'image_rapchieuphim/quankynam.jpg', 'link' => '#')
+                    );
+
+                    foreach($banners as $banner){
+                        echo '
+                            <a href="'.$banner["link"].'" class="carousel-item">
+                                <img src="'.$banner["image"].'" alt="Banner">
+                            </a>
+                        ';
+                    }
+                    ?>
+
+                </div>
+                <button class="carousel-btn right" onclick="moveRight()">&#8250;</button>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0; font-size: 28px; font-weight: bold; letter-spacing: 2px;">
+                MOVIE SELECTION
+            </div>
 
             <h2>🍿 Phim Đang Chiếu</h2>
 
             <div class="movie-grid">
-
                 <?php
                 $sql = "SELECT MaPhim, TenPhim, Hinhanh FROM phim WHERE NgayKhoiChieu <= '$today' ORDER BY NgayKhoiChieu DESC LIMIT 8";
                 $result = mysqli_query($conn, $sql);
@@ -78,14 +208,39 @@ $today = date('Y-m-d');
                 }
                 ?>
             </div>
-        </div>
-        
     </div>
-    
-    <?php
-    // Đóng kết nối CSDL
-    if (isset($conn)) { mysqli_close($conn); }
-    ?>
+</div>
+
+<?php
+if (isset($conn)) { mysqli_close($conn); }
+?>
+
+<!-- ⭐ JS CAROUSEL -->
+<script>
+    const track = document.getElementById("carouselTrack");
+    const items = document.querySelectorAll('.carousel-item');
+    const containerWidth = document.querySelector('.carousel-container').offsetWidth;
+    let currentIndex = 0;
+
+    function scrollToSlide(index) {
+        const scrollAmount = containerWidth * index;
+        track.scrollTo({ left: scrollAmount, behavior: "smooth" });
+        currentIndex = index % items.length;
+    }
+
+    function moveLeft() {
+        scrollToSlide((currentIndex - 1 + items.length) % items.length);
+    }
+
+    function moveRight() {
+        scrollToSlide((currentIndex + 1) % items.length);
+    }
+
+    // Tự động chạy carousel - chuyển sang ảnh tiếp theo mỗi 5 giây
+    setInterval(() => {
+        moveRight();
+    }, 5000);
+</script>
 
 </body>
 </html>

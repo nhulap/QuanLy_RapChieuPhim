@@ -9,7 +9,7 @@ body {
 }
 .wrapper {
     width: 90%; /* Điều chỉnh width để nội dung nằm gọn hơn */
-    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    max-width: 1400px; /* Giới hạn chiều rộng tối đa */
     margin: 0 auto;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -31,6 +31,10 @@ h1, h2 {
     align-items: center;
     justify-content: center;
     padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .logo {
     font-size: 36px;
@@ -44,6 +48,9 @@ h1, h2 {
     height: 50px;
     width: 100%;
     background-color: #d11e3b; /* Màu đỏ đặc trưng của CGV */
+    position: sticky;
+    top: 130px;
+    z-index: 99;
 }
 
 .menu ul {
@@ -75,12 +82,64 @@ h1, h2 {
 }
 
 /* --- MAIN CONTENT --- */
-.main {
-    flex-grow: 1; /* Quan trọng: làm cho phần main mở rộng để đẩy footer xuống dưới */
+.content-container {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
     background-color: #fff;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    box-sizing: border-box;
+    min-height: 500px;
+}
+
+.sidebar-left {
+    order: 1;
+}
+
+.main {
+    flex-grow: 1;
+    order: 2;
+}
+
+.sidebar-right {
+    order: 3;
+}
+
+/* Side Banner Styles */
+.side-banner {
+    position: fixed;
+    width: 120px;
+    height: auto;
+    z-index: 5;
+    top: 170px;
+}
+
+.side-banner.left {
+    left: 10px;
+}
+
+.side-banner.right {
+    right: 10px;
+}
+
+.side-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.side-banner a {
+    text-decoration: none;
 }
 
 /* --- FOOTER --- */
@@ -347,4 +406,90 @@ h1, h2 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+/* ======================================================= */
+/* IV. CSS CHO CAROUSEL */
+/* ======================================================= */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.carousel-wrapper {
+    flex: 1;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.carousel {
+    display: flex;
+    gap: 15px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    flex: 0 0 calc(25% - 12px);
+    text-decoration: none;
+    color: inherit;
+}
+
+.carousel-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    height: 300px;
+}
+
+.carousel-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.carousel-btn {
+    position: relative;
+    background-color: #d11e3b;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 28px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    z-index: 10;
+    min-width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-btn:hover {
+    background-color: #a3182d;
+}
+
+.carousel-text {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 3px;
+    text-transform: uppercase;
 }

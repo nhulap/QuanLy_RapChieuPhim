@@ -11503,3 +11503,28 @@ input[type="number"].cgv-input:focus {
 .cgv-btn-danger:hover {
     background-color: #ff3b2f;
 }
+
+.cgv-card-rap {
+    background-color: #151515;
+    border-radius: 10px;
+    border: 1px solid #333;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+}
+.cgv-card-rap:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    border-color: #e71a0f;
+}
+
+.cgv-card-movie {
+    background-color: #151515;
+    border-radius: 10px;
+    border: 1px solid #333;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+}
+.cgv-card-movie:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    border-color: #e71a0f;
+}
+

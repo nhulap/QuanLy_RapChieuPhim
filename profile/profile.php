@@ -1,6 +1,5 @@
 <?php
 session_start();
-// Đã sửa lỗi đường dẫn: require "../Connection.php";
 require "../Connection.php"; 
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
@@ -8,20 +7,32 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 
-// ⭐ 1. Vấn đề bảo mật: Sử dụng mysqli_real_escape_string để làm sạch dữ liệu
+// Lấy thông tin user
 $ma_khach_hang = mysqli_real_escape_string($conn, $_SESSION['user_id']);
-
 $sql = "SELECT HoTen, Email, SoDu FROM khachhang WHERE MaKhachHang = '$ma_khach_hang'";
 $result = mysqli_query($conn, $sql);
-
-// ⭐ 2. Vấn đề Fatal Error: Kiểm tra kết quả truy vấn
 if ($result === false) {
-    // Nếu truy vấn thất bại, dừng lại và hiển thị lỗi để dễ dàng debug
     die("Lỗi truy vấn CSDL: " . mysqli_error($conn) . " | SQL: " . $sql);
 }
-
-// Nếu truy vấn thành công, tiếp tục fetch
 $khach_hang = mysqli_fetch_assoc($result);
+
+// Tính tổng chi tiêu trong tháng
+$current_month = date('m');
+$current_year = date('Y');
+
+$sql_tongtien = "SELECT SUM(TongTien) AS tong_chi_tieu 
+                 FROM datve 
+                 WHERE MaKhachHang = '$ma_khach_hang' 
+                 AND MONTH(ThoiGianDat) = '$current_month' 
+                 AND YEAR(ThoiGianDat) = '$current_year'";
+$result_tongtien = mysqli_query($conn, $sql_tongtien);
+
+if ($result_tongtien === false) {
+    die("Lỗi truy vấn tổng chi tiêu: " . mysqli_error($conn));
+}
+
+$tong_chi_tieu = mysqli_fetch_assoc($result_tongtien)['tong_chi_tieu'];
+if (!$tong_chi_tieu) $tong_chi_tieu = 0;
 
 mysqli_close($conn);
 ?>
@@ -31,7 +42,8 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thông tin cá nhân</title>
-    </head>
+    <link rel="stylesheet" href="../styleproflie.css">
+</head>
 <body>
     <div class="wrapper">
         <div class="main">
@@ -44,11 +56,13 @@ mysqli_close($conn);
             <p><strong>Mã Khách Hàng:</strong> <?php echo htmlspecialchars($ma_khach_hang); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($khach_hang['Email']); ?></p>
             <p><strong>Số dư:</strong> <?php echo number_format($khach_hang['SoDu'], 0, ',', '.'); ?> VND</p>
+            <p><strong>Tổng chi tiêu trong tháng:</strong> <?php echo number_format($tong_chi_tieu, 0, ',', '.'); ?> VND</p>
             <?php else: ?>
-            <p style="color: red;">Không tìm thấy thông tin khách hàng với ID: <?php echo htmlspecialchars($ma_khach_hang); ?>. Vui lòng kiểm tra CSDL.</p>
+            <p style="color: red;">Không tìm thấy thông tin khách hàng với ID: <?php echo htmlspecialchars($ma_khach_hang); ?>.</p>
             <?php endif; ?>
+
             <hr>
-            <a href="../Login&Register/logout.php">Đăng xuất</a>
+            <a href="../Login&Register/logout.php" class="btn-logout">Đăng xuất</a>
         </div>
     </div>
 </body>

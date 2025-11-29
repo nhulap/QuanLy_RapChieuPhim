@@ -227,9 +227,6 @@ $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền c
             
         </div>
         
-        <div class="footer">
-            <p>&copy; 2025 CJ CGV VIETNAM. All rights reserved.</p>
-        </div>
     </div>
 
 </body>

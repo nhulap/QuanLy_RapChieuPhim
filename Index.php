@@ -18,104 +18,104 @@ $today = date('Y-m-d');
     <link rel="stylesheet" href="<?php echo $css_path; ?>">
     <title><?php echo $page_title; ?></title>
 
-    <style>
-.side-banner {
+<style>
+    .side-banner {
     position: fixed;
     top: 0px;
     width: 180px;
     height: 350px;
     z-index: 500;
-}
+    }
 
-.side-banner img {
+    .side-banner img {
     width: 100%;
     height: 950px;
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 0 8px rgba(0,0,0,0.4);
-}
+    }
 
-.side-banner.left {
-    left: 10px;
-}
+    .side-banner.left {
+        left: 10px;
+    }
 
 
-.side-banner.right {
-    right: 10px;
-}
+    .side-banner.right {
+        right: 10px;
+    }
 
-        .carousel-container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            padding: 20px 0;
-        }
+    .carousel-container {
+         width: 100%;
+         max-width: 1100px;
+         margin: 0 auto;
+         position: relative;
+         padding: 20px 0;
+     }
 
-        .carousel-title {
-            text-align: center;
-            font-size: 34px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
+     .carousel-title {
+         text-align: center;
+        font-size: 34px;
+        font-weight: bold;
+         margin-bottom: 20px;
+         letter-spacing: 2px;
+     }
 
-        .carousel-track {
-            display: flex;
-            overflow: hidden;
-            scroll-behavior: smooth;
-        }
+     .carousel-track {
+         display: flex;
+         overflow: hidden;
+        scroll-behavior: smooth;
+     }
 
-        .carousel-item {
-            min-width: 100%;
-            margin-right: 0;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: transform .3s;
-        }
+    .carousel-item {
+     min-width: 100%;
+        margin-right: 0;
+         border-radius: 10px;
+         overflow: hidden;
+        transition: transform .3s;
+    }
 
-        .carousel-item img {
-            width: 100%;
-            height: 380px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
+    .carousel-item img {
+         width: 100%;
+         height: 380px;
+         object-fit: cover;
+         border-radius: 10px;
+     }
 
-        .carousel-btn {
-            position: absolute;
-            top: 45%;
-            transform: translateY(-50%);
-            background: red;
-            color: white;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .carousel-btn {
+         position: absolute;
+         top: 45%;
+         transform: translateY(-50%);
+          background: red;
+         color: white;
+         border-radius: 50%;
+         width: 45px;
+         height: 45px;
+        border: none;
+         cursor: pointer;
+         font-size: 20px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+    }
 
-        .carousel-btn.left { left: -20px; }
-        .carousel-btn.right { right: -20px; }
+     .carousel-btn.left { left: -20px; }
+    .carousel-btn.right { right: -20px; }
 
-        .carousel-btn:hover {
-            background: #b30000;
-        }
+    .carousel-btn:hover {
+        background: #b30000;
+    }
     </style>
 </head>
 
 <body>
 <div class="side-banner left">
-    <a href="#">
+    <a href="./chi_tiet_phim/chi_tiet_phim.php?MaPhim=MP0010">
         <img src="./image_rapchieuphim/sidebar.png" alt="Banner Trái">
     </a>
 </div>
 
 <div class="side-banner right">
-    <a href="#">
+    <a href="./chi_tiet_phim/chi_tiet_phim.php?MaPhim=MP0010">
         <img src="./image_rapchieuphim/sidebar.png" alt="Banner Phải">
     </a>
 </div>
@@ -136,7 +136,7 @@ $today = date('Y-m-d');
                     $banners = array(
                         array('image' => 'image_rapchieuphim/banner.jpg', 'link' => '#'),
                         array('image' => 'image_rapchieuphim/banner2.jpg', 'link' => '#'),
-                        array('image' => 'image_rapchieuphim/quankynam.jpg', 'link' => '#')
+                        array('image' => 'image_rapchieuphim/quankynam.jpg', 'link' => './chi_tiet_phim/chi_tiet_phim.php?MaPhim=MP0009')
                     );
 
                     foreach($banners as $banner){

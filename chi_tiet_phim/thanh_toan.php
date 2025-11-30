@@ -38,7 +38,7 @@ $sql_info = "SELECT SC.GiaVeCoBan, P.TenPhim, KH.SoDu
              JOIN phim P ON SC.MaPhim = P.MaPhim
              LEFT JOIN khachhang KH ON KH.MaKhachHang = '$ma_kh_safe'
              WHERE SC.MaSuatChieu = '$ma_suat_safe'";
-             
+
 $result_info = mysqli_query($conn, $sql_info);
 if ($result_info === false) {
     die("Lỗi truy vấn thông tin cơ bản: " . mysqli_error($conn));
@@ -64,7 +64,7 @@ if (!empty($ma_khuyen_mai)) {
     // Kiểm tra Ngày kết thúc VÀ đảm bảo Mã Khuyến mãi tồn tại
     $sql_km = "SELECT GiaTriGiam FROM khuyenmai WHERE MaKhuyenMai = '$ma_km_safe' AND NgayKetThuc >= NOW()";
     $result_km = mysqli_query($conn, $sql_km);
-   
+
     if (mysqli_num_rows($result_km) > 0) {
         $km = mysqli_fetch_assoc($result_km);
         $gia_tri_giam = $km['GiaTriGiam'];
@@ -77,10 +77,22 @@ if (!empty($ma_khuyen_mai)) {
 $tong_tien_sau_giam = $tong_tien_chua_giam * (1 - $gia_tri_giam / 100);
 $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền cuối cùng
 
+// Lấy tên ghế từ MaGhe
+$ten_ghe_arr = [];
+if (!empty($selected_seats)) {
+    $ma_ghe_in = implode("','", array_map('trim', $selected_seats));
+    $sql_ghe = "SELECT SoGhe FROM ghe WHERE MaGhe IN ('$ma_ghe_in')";
+    $result_ghe = mysqli_query($conn, $sql_ghe);
+    while ($row_ghe = mysqli_fetch_assoc($result_ghe)) {
+        $ten_ghe_arr[] = $row_ghe['SoGhe'];
+    }
+}
+$ten_ghe_str = implode(', ', $ten_ghe_arr);
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>3. Thanh Toán - <?php echo $ten_phim; ?></title>
     <link rel="stylesheet" href="../stylelap.css">
@@ -94,15 +106,18 @@ $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền c
             border-radius: 8px;
             background-color: #f9f9f9;
         }
+
         .payment-summary table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         .payment-summary table td {
             padding: 10px;
             border: 1px solid #eee;
         }
+
         .payment-methods label {
             display: block;
             margin-bottom: 10px;
@@ -112,19 +127,24 @@ $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền c
             cursor: pointer;
             transition: background-color 0.2s;
         }
+
         .payment-methods label:hover {
             background-color: #f1f1f1;
         }
-        .payment-methods input[type="radio"]:disabled + span {
+
+        .payment-methods input[type="radio"]:disabled+span {
             color: #888;
         }
+
         .payment-methods input[type="radio"]:disabled {
             cursor: not-allowed;
         }
+
         #btn-confirm {
             width: 100%;
             padding: 15px 20px;
-            background: #d11e3b; /* Màu CGV */
+            background: #d11e3b;
+            /* Màu CGV */
             color: white;
             border: none;
             border-radius: 5px;
@@ -133,20 +153,24 @@ $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền c
             transition: background-color 0.3s;
             margin-top: 20px;
         }
+
         #btn-confirm:hover {
             background: #a3182d;
         }
+
         .promo-form {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
+
         .promo-form input[type="text"] {
             padding: 10px;
             flex-grow: 1;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
         .promo-form button {
             padding: 10px 20px;
             background: #5cb85c;
@@ -157,79 +181,99 @@ $tong_tien_sau_giam = round($tong_tien_sau_giam, 0); // Làm tròn số tiền c
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
-        <div class="header"><div class="logo">CGV CINEMAS</div></div>
+        <div class="header">
+            <div class="logo">CGV CINEMAS</div>
+        </div>
         <div class="menu">
             <ul>
                 <li><a href="../index.php">Trang chủ</a></li>
-                </ul>
+            </ul>
         </div>
-        
+
         <div class="main">
             <h1>💵 Xác Nhận Thanh Toán</h1>
-            
+
             <div class="payment-summary">
                 <h3>Phim: <?php echo htmlspecialchars($ten_phim); ?></h3>
-                <p>Ghế đã chọn: **<?php echo count($selected_seats); ?>** (<?php echo implode(', ', array_map('htmlspecialchars', $selected_seats)); ?>)</p>
-                
+                <p>Ghế đã chọn: <strong><?php echo count($selected_seats); ?></strong> (<?php echo htmlspecialchars($ten_ghe_str); ?>)</p>
+
                 <hr>
-                
+
                 <h2>Áp Dụng Khuyến Mãi</h2>
                 <form method="POST" action="thanh_toan.php" class="promo-form">
                     <input type="hidden" name="MaSuatChieu" value="<?php echo htmlspecialchars($ma_suat); ?>">
-                    <?php foreach ($selected_seats as $seat) { echo '<input type="hidden" name="selected_seats[]" value="' . htmlspecialchars($seat) . '">'; } ?>
-                    
+                    <?php foreach ($selected_seats as $seat) {
+                        echo '<input type="hidden" name="selected_seats[]" value="' . htmlspecialchars($seat) . '">';
+                    } ?>
+
                     <input type="text" id="MaKhuyenMai" name="MaKhuyenMai" placeholder="Nhập mã khuyến mãi" value="<?php echo htmlspecialchars($_POST['MaKhuyenMai'] ?? $ma_khuyen_mai); ?>">
                     <button type="submit">Áp Dụng</button>
                     <?php if (!empty($_POST['MaKhuyenMai']) && $gia_tri_giam == 0): ?><span style="color: red; margin-left: 10px;"> Mã không hợp lệ!</span><?php endif; ?>
                 </form>
-                
+
                 <hr>
-                
+
                 <h2>Tổng Kết</h2>
                 <table>
-                    <tr><td>**Tổng tiền chưa giảm**</td><td align="right"><?php echo number_format($tong_tien_chua_giam, 0, ',', '.'); ?> VND</td></tr>
-                    <tr><td>**Giảm giá (<?php echo $gia_tri_giam; ?>%)**</td><td align="right"><span style="color: green;">-<?php echo number_format($tong_tien_chua_giam - $tong_tien_sau_giam, 0, ',', '.'); ?> VND</span></td></tr>
-                    <tr><td>**TỔNG CỘNG**</td><td align="right"><strong style="color: #d11e3b; font-size: 1.2em;"><?php echo number_format($tong_tien_sau_giam, 0, ',', '.'); ?> VND</strong></td></tr>
-                    <tr><td>**Số dư tài khoản của bạn**</td><td align="right"><?php echo number_format($so_du_tai_khoan, 0, ',', '.'); ?> VND</td></tr>
+                    <tr>
+                        <td>**Tổng tiền chưa giảm**</td>
+                        <td align="right"><?php echo number_format($tong_tien_chua_giam, 0, ',', '.'); ?> VND</td>
+                    </tr>
+                    <tr>
+                        <td>**Giảm giá (<?php echo $gia_tri_giam; ?>%)**</td>
+                        <td align="right"><span style="color: green;">-<?php echo number_format($tong_tien_chua_giam - $tong_tien_sau_giam, 0, ',', '.'); ?> VND</span></td>
+                    </tr>
+                    <tr>
+                        <td>**TỔNG CỘNG**</td>
+                        <td align="right"><strong style="color: #d11e3b; font-size: 1.2em;"><?php echo number_format($tong_tien_sau_giam, 0, ',', '.'); ?> VND</strong></td>
+                    </tr>
+                    <tr>
+                        <td>**Số dư tài khoản của bạn**</td>
+                        <td align="right"><?php echo number_format($so_du_tai_khoan, 0, ',', '.'); ?> VND</td>
+                    </tr>
                 </table>
 
                 <hr>
-                
+
                 <form method="POST" action="xu_ly_dat_ve.php" class="payment-methods">
                     <input type="hidden" name="MaSuatChieu" value="<?php echo htmlspecialchars($ma_suat); ?>">
                     <input type="hidden" name="TongTien" value="<?php echo $tong_tien_sau_giam; ?>">
                     <input type="hidden" name="MaKhuyenMai" value="<?php echo htmlspecialchars($ma_khuyen_mai); ?>">
-                    <?php foreach ($selected_seats as $seat) { echo '<input type="hidden" name="selected_seats[]" value="' . htmlspecialchars($seat) . '">'; } ?>
-                    
+                    <?php foreach ($selected_seats as $seat) {
+                        echo '<input type="hidden" name="selected_seats[]" value="' . htmlspecialchars($seat) . '">';
+                    } ?>
+
                     <h2>Chọn Phương Thức Thanh Toán</h2>
-                    
+
                     <label>
                         <input type="radio" name="PhuongThucThanhToan" value="TaiKhoan" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'disabled' : ''; ?>>
                         <span>Thanh toán bằng **Số dư tài khoản**</span> <?php if ($so_du_tai_khoan < $tong_tien_sau_giam): ?>
                             <span style="color: red;">* (Số dư không đủ)</span>
                         <?php endif; ?>
                     </label>
-                    
+
                     <label>
                         <input type="radio" name="PhuongThucThanhToan" value="ViDienTu" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'checked' : ''; ?>>
                         <span>Thanh toán bằng **Ví điện tử/Thẻ Quốc Tế**</span>
                     </label>
-                    
+
                     <button type="submit" id="btn-confirm">XÁC NHẬN ĐẶT VÉ</button>
-                    
+
                     <?php if ($so_du_tai_khoan < $tong_tien_sau_giam): ?>
-                    <p style="color: red; text-align: center; margin-top: 15px;">*Vui lòng chọn phương thức thanh toán khác do Số dư tài khoản không đủ.</p>
+                        <p style="color: red; text-align: center; margin-top: 15px;">*Vui lòng chọn phương thức thanh toán khác do Số dư tài khoản không đủ.</p>
                     <?php endif; ?>
                 </form>
             </div>
-            
+
         </div>
-        
+
     </div>
 
 </body>
+
 </html>
 
 <?php mysqli_close($conn); ?>

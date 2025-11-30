@@ -3,7 +3,7 @@ session_start();
 require "Connection.php";
 
 $page_title = "Trang chủ - CGV";
-$css_path = 'stylelap.css';
+$css_path = 'stylelap_new.css';
 
 require_once 'layout/header.php'; 
 

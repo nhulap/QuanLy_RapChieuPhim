@@ -62,6 +62,7 @@ mysqli_close($conn);
             <?php endif; ?>
 
             <hr>
+             <a href="../chi_tiet_phim/lich_su_dat_ve.php" class="btn-logout">Xem Lịch Sử</a>
             <a href="../Login&Register/logout.php" class="btn-logout">Đăng xuất</a>
         </div>
     </div>

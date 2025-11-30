@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,19 +21,19 @@
             background-color: #fff;
             border-radius: 10px;
             padding: 40px 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
             max-width: 500px;
             width: 90%;
         }
 
         h1 {
-            color: #d11e3b; 
+            color: #d11e3b;
             margin-bottom: 20px;
         }
 
         .success-msg {
-            color: #28a745; 
+            color: #28a745;
             font-weight: bold;
             font-size: 1.2em;
             margin-bottom: 25px;
@@ -59,9 +60,11 @@
             .container-success {
                 padding: 30px 20px;
             }
+
             h1 {
                 font-size: 24px;
             }
+
             .success-msg {
                 font-size: 1.1em;
             }
@@ -71,12 +74,15 @@
             .container-success {
                 padding: 20px 15px;
             }
+
             h1 {
                 font-size: 20px;
             }
+
             .success-msg {
                 font-size: 1em;
             }
+
             a.home-link {
                 padding: 8px 15px;
                 font-size: 14px;
@@ -84,6 +90,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container-success">
         <h1>🎉 Đặt Vé Thành Công!</h1>
@@ -91,8 +98,10 @@
             <?php echo htmlspecialchars($_GET['msg'] ?? 'Vé của bạn đã được đặt.'); ?>
         </p>
         <p>
+            <a href="../chi_tiet_phim/chi_tiet_ve_dat_thanh_cong.php" class="home-link">Xem thông tin vé đặt thành công</a>
             <a href="../index.php" class="home-link">Quay về trang chủ</a>
         </p>
     </div>
 </body>
+
 </html>

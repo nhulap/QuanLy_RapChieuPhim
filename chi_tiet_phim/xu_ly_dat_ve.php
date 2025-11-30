@@ -1,13 +1,13 @@
 <?php
 session_start();
-require "../Connection.php"; 
+require "../Connection.php";
 
 // =======================================================
 // 1. KIỂM TRA ĐĂNG NHẬP VÀ LẤY DỮ LIỆU ĐẦU VÀO
 // =======================================================
 
 // Lấy MaKhachHang từ Session (Đã đăng nhập)
-$ma_khach_hang = $_SESSION['user_id'] ?? null; 
+$ma_khach_hang = $_SESSION['user_id'] ?? null;
 
 // ⭐ KIỂM TRA BẮT BUỘC ĐĂNG NHẬP
 if (!$ma_khach_hang) {
@@ -29,7 +29,7 @@ if (!$ma_suat || $tong_tien <= 0 || !$phuong_thuc || empty($selected_seats)) {
 
 $ma_suat_safe = mysqli_real_escape_string($conn, $ma_suat);
 // ⭐ SỬ DỤNG MÃ KHÁCH HÀNG TỪ SESSION
-$ma_kh_safe = mysqli_real_escape_string($conn, $ma_khach_hang); 
+$ma_kh_safe = mysqli_real_escape_string($conn, $ma_khach_hang);
 $tong_tien_safe = (float)$tong_tien;
 
 // =======================================================
@@ -39,14 +39,29 @@ $tong_tien_safe = (float)$tong_tien;
 // Dùng transaction
 mysqli_begin_transaction($conn);
 
-// Tạo Mã Đặt Vé (Tạm thời)
-// Sử dụng hàm uniqid để tạo mã đặt vé duy nhất hơn
-$ma_dat_ve = 'DV' . uniqid(); 
+// Tạo Mã Đặt Vé tự động tăng (chỉ lấy 4 số sau DV)
+$sql_max = "SELECT MAX(CAST(SUBSTRING(MaDatVe, 3, 4) AS UNSIGNED)) AS max_ma FROM datve";
+$result_max = mysqli_query($conn, $sql_max);
+$row_max = mysqli_fetch_assoc($result_max);
+$next_ma = ($row_max['max_ma'] ?? 1000) + 1;
+$ma_dat_ve = 'DV' . str_pad($next_ma, 4, '0', STR_PAD_LEFT);
+
 $current_time = date('Y-m-d H:i:s');
 $so_luong_ve = count($selected_seats);
-$ghe_da_chon_string = mysqli_real_escape_string($conn, implode(',', $selected_seats)); 
 
-$trang_thai_thanh_toan = 'ThanhCong'; 
+// Lấy danh sách tên ghế (SoGhe) từ MaGhe
+$ten_ghe_arr = [];
+if (!empty($selected_seats)) {
+    $ma_ghe_in = implode("','", array_map('trim', $selected_seats));
+    $sql_ghe = "SELECT SoGhe FROM ghe WHERE MaGhe IN ('$ma_ghe_in')";
+    $result_ghe = mysqli_query($conn, $sql_ghe);
+    while ($row_ghe = mysqli_fetch_assoc($result_ghe)) {
+        $ten_ghe_arr[] = $row_ghe['SoGhe'];
+    }
+}
+$ghe_da_chon_string = mysqli_real_escape_string($conn, implode(', ', $ten_ghe_arr));
+
+$trang_thai_thanh_toan = 'Thanh Toán Thành Công';
 
 try {
     // 2.1. KIỂM TRA ĐỦ SỐ DƯ (TRƯỚC KHI TRỪ TIỀN)
@@ -56,7 +71,7 @@ try {
         $kh_info = mysqli_fetch_assoc($result_sodu);
 
         if (!$kh_info || $kh_info['SoDu'] < $tong_tien_safe) {
-             throw new Exception("Lỗi: Số dư tài khoản không đủ để thực hiện thanh toán.");
+            throw new Exception("Lỗi: Số dư tài khoản không đủ để thực hiện thanh toán.");
         }
     }
 
@@ -86,24 +101,23 @@ try {
             UPDATE khachhang 
             SET SoDu = SoDu - $tong_tien_safe 
             WHERE MaKhachHang = '$ma_kh_safe'"; // Không cần kiểm tra SoDu >= trong UPDATE vì đã kiểm tra ở 2.1
-            
+
         if (!mysqli_query($conn, $sql_update_sodu) || mysqli_affected_rows($conn) == 0) {
             // Rollback nếu lỗi trừ tiền
             throw new Exception("Lỗi: Không thể cập nhật số dư tài khoản.");
         }
     }
-    
-    mysqli_commit($conn); // Hoàn tất Transaction
-    
-    // Chuyển hướng thành công
-    header("Location: dat_ve_thanh_cong.php?MaDatVe=" . urlencode($ma_dat_ve));
-    exit();
 
+    mysqli_commit($conn); // Hoàn tất Transaction
+
+    // Chuyển hướng thành công
+    // header("Location: dat_ve_thanh_cong.php?MaDatVe=" . urlencode($ma_dat_ve));
+    header("Location: chi_tiet_ve_dat_thanh_cong.php?MaDatVe=" . urlencode($ma_dat_ve));
+    exit();
 } catch (Exception $e) {
     // Nếu có lỗi, rollback
     mysqli_rollback($conn);
     die("LỖI ĐẶT VÉ: " . $e->getMessage() . ". Vui lòng thử lại.");
 }
 
-mysqli_close($conn); 
-?>
+mysqli_close($conn);

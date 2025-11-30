@@ -23,9 +23,7 @@ if ($result_info === false) {
 $info = mysqli_fetch_assoc($result_info);
 $ten_phim = $info['TenPhim'] ?? 'Phim';
 
-// =======================================================
-// ⭐ PHẦN SỬA ĐỔI CHÍNH: Lấy ghế đã đặt từ cột MaGheDaChon trong bảng DATVE
-// =======================================================
+// Lấy ghế đã đặt
 $sql_dat = "SELECT MaGheDaChon FROM datve WHERE MaSuatChieu = '$ma_suat_safe' AND TrangThaiThanhToan = 'ThanhCong'";
 $result_dat = mysqli_query($conn, $sql_dat); 
 
@@ -39,12 +37,10 @@ $ghe_da_dat = [];
 if (mysqli_num_rows($result_dat) > 0) {
     while($row = mysqli_fetch_assoc($result_dat)) {
         if (!empty($row['MaGheDaChon'])) {
-            // Tách chuỗi ghế (ví dụ: "G01,G02") thành mảng và gộp vào $ghe_da_dat
             $ghe_da_dat = array_merge($ghe_da_dat, explode(',', $row['MaGheDaChon']));
         }
     }
 }
-// Dọn dẹp mảng (loại bỏ khoảng trắng, giá trị rỗng)
 $ghe_da_dat = array_map('trim', $ghe_da_dat);
 $ghe_da_dat = array_filter($ghe_da_dat); 
 
@@ -89,12 +85,12 @@ if ($result_ghe === false) {
                     // Kiểm tra ghế này có nằm trong danh sách ghế đã đặt $ghe_da_dat không
                     $is_booked = in_array($ghe['MaGhe'], $ghe_da_dat);
                     $class = $is_booked ? 'booked' : 'available';
-                    $price_attr = $info['GiaVeCoBan'] ?? 90000;
+                    $price_attr = $info['GiaVeCoBan'];
                 ?>
                 <label class="seat <?php echo $class; ?>">
                     <?php if (!$is_booked): ?>
                         <input type="checkbox" name="selected_seats[]" value="<?php echo htmlspecialchars($ghe['MaGhe']); ?>" style="display: none;" 
-                                data-price="<?php echo $price_attr; ?>">
+                                 data-price="<?php echo $price_attr; ?>">
                     <?php endif; ?>
                     <?php echo htmlspecialchars($ghe['SoGhe']); ?>
                 </label>
@@ -113,10 +109,14 @@ if ($result_ghe === false) {
 
         document.querySelectorAll('.seat.available').forEach(seat => {
             seat.addEventListener('click', function(e) {
+                // ⭐ SỬA LỖI: Ngăn chặn hành vi mặc định của thẻ <label>
+                // để tránh xung đột với việc toggle bằng JS
+                e.preventDefault(); 
+                
                 const checkbox = this.querySelector('input[type="checkbox"]');
                 const price = parseFloat(checkbox.getAttribute('data-price'));
                 
-                // Toggle checked state
+                // ⭐ SỬA LỖI: Đảo trạng thái checkbox (Đã bị thiếu/xóa trong bản trước)
                 checkbox.checked = !checkbox.checked;
 
                 if (checkbox.checked) {

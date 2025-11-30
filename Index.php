@@ -1,7 +1,8 @@
 <?php
 session_start();
 require "Connection.php";
-
+require_once __DIR__ . '/config/config.php'; 
+require_once __DIR__ . '/layout/header.php'; 
 $page_title = "Trang chủ - CGV";
 $css_path = 'stylelap_new.css';
 
@@ -108,17 +109,6 @@ $today = date('Y-m-d');
 </head>
 
 <body>
-<div class="side-banner left">
-    <a href="./chi_tiet_phim/chi_tiet_phim.php?MaPhim=MP0010">
-        <img src="./image_rapchieuphim/sidebar.png" alt="Banner Trái">
-    </a>
-</div>
-
-<div class="side-banner right">
-    <a href="./chi_tiet_phim/chi_tiet_phim.php?MaPhim=MP0010">
-        <img src="./image_rapchieuphim/sidebar.png" alt="Banner Phải">
-    </a>
-</div>
 
 
 

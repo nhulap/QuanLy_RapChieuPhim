@@ -13,7 +13,8 @@
     include "../Connection.php"; // Nếu lỗi thay thành Connection.php hoặc ./Connection.php tùy theo file đường dẫn
     session_start();
     $messError = '';
-
+    require_once __DIR__ . '/../config/config.php'; 
+    require_once __DIR__ . '/../layout/header.php'; 
     if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
         $name  = $_POST['name']  ?? '';

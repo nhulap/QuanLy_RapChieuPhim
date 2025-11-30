@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 18, 2025 lúc 06:44 PM
+-- Thời gian đã tạo: Th10 30, 2025 lúc 10:31 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -117,7 +117,7 @@ CREATE TABLE `datve` (
   `ThoiGianDat` datetime NOT NULL,
   `TongTien` decimal(10,2) NOT NULL,
   `PhuongThucThanhToan` varchar(50) DEFAULT NULL,
-  `TrangThaiThanhToan` varchar(20) DEFAULT 'ThanhCong',
+  `TrangThaiThanhToan` varchar(30) DEFAULT 'Thanh Toán Thành Công',
   `MaSuatChieu` varchar(10) DEFAULT NULL,
   `SoLuong` int(11) NOT NULL DEFAULT 1,
   `MaGheDaChon` varchar(500) DEFAULT NULL
@@ -128,11 +128,11 @@ CREATE TABLE `datve` (
 --
 
 INSERT INTO `datve` (`MaDatVe`, `MaKhachHang`, `MaKhuyenMai`, `ThoiGianDat`, `TongTien`, `PhuongThucThanhToan`, `TrangThaiThanhToan`, `MaSuatChieu`, `SoLuong`, `MaGheDaChon`) VALUES
-('DV1001', 'KH1001', 'KM2485', '2025-11-18 10:30:00', 144000.00, 'QR', 'Thanh Toán Thành Côn', 'S001', 2, 'A1, A2'),
-('DV1002', 'KH1002', 'KM0249', '2025-11-18 12:15:00', 70000.00, 'Chuyển Khoản', 'Thanh Toán Thành Côn', 'S003', 1, 'B10'),
-('DV1003', 'KH1003', NULL, '2025-11-18 15:40:00', 255000.00, 'QR', 'Thanh Toán Thành Côn', 'S005', 3, 'C5, C6, C7'),
-('DV1004', 'KH1004', 'KM4720', '2025-11-18 18:00:00', 272000.00, 'Chuyển Khoản', 'Thanh Toán Thành Côn', 'S001', 4, 'D1, D2, D3, D4'),
-('DV1005', 'KH1001', NULL, '2025-11-18 20:50:00', 90000.00, 'QR', 'Thanh Toán Thành Côn', 'S003', 1, 'E15');
+('DV1001', 'KH1001', 'KM2485', '2025-11-18 10:30:00', 144000.00, 'Số Dư Tài Khoản', 'Thanh Toán Thành Công', 'S001', 2, 'A1, A2'),
+('DV1002', 'KH1002', 'KM0249', '2025-11-18 12:15:00', 70000.00, 'Chuyển Khoản', 'Thanh Toán Thành Công', 'S003', 1, 'B10'),
+('DV1003', 'KH1003', NULL, '2025-11-18 15:40:00', 255000.00, 'Số Dư Tài Khoản', 'Thanh Toán Thành Công', 'S005', 3, 'C5, C6, C7'),
+('DV1004', 'KH1004', 'KM4720', '2025-11-18 18:00:00', 272000.00, 'Chuyển Khoản', 'Thanh Toán Thành Công', 'S001', 4, 'D1, D2, D3, D4'),
+('DV1005', 'KH1001', NULL, '2025-11-18 20:50:00', 90000.00, 'Chuyển Khoản', 'Thanh Toán Thành Công', 'S003', 1, 'E15');
 
 -- --------------------------------------------------------
 
@@ -2300,11 +2300,11 @@ CREATE TABLE `khuyenmai` (
 --
 
 INSERT INTO `khuyenmai` (`MaKhuyenMai`, `TenKhuyenMai`, `GiaTriGiam`, `NgayBatDau`, `NgayKetThuc`, `DieuKienApDung`) VALUES
-('KM0249', 'Ưu Đãi Sinh Viên', 999.99, '2025-01-01', '2026-12-31', 'Giảm 20.000 VNĐ/vé, áp dụng cho sinh viên có thẻ.'),
+('KM0249', 'Ưu Đãi Sinh Viên', 20.00, '2025-01-01', '2026-12-31', 'Giảm 20%/vé, áp dụng cho sinh viên có thẻ.'),
 ('KM2485', 'Cuối tuần Vui Vẻ', 10.00, '2025-11-01', '2026-05-31', 'Giảm 10% tổng hóa đơn, áp dụng cho suất chiếu Chủ Nhật.'),
 ('KM4720', 'Vé VIP Premiere', 15.00, '2025-11-20', '2025-12-31', 'Giảm 15% khi mua vé xem phim công chiếu (premiere).'),
 ('KM9503', 'Happy Hour', 50.00, '2025-11-01', '2026-01-31', 'Giảm 50% vé xem phim, áp dụng cho suất chiếu trước 12:00 trưa.'),
-('KM9897', 'Combo Gia Đình', 999.99, '2025-12-01', '2026-03-31', 'Giảm 40.000 VNĐ cho hóa đơn từ 4 vé trở lên.');
+('KM9897', 'Combo Gia Đình', 40.00, '2025-12-01', '2026-03-31', 'Giảm 40% cho hóa đơn từ 4 vé trở lên.');
 
 -- --------------------------------------------------------
 
@@ -2334,7 +2334,12 @@ INSERT INTO `phim` (`MaPhim`, `TenPhim`, `ThoiLuong`, `TheLoai`, `DaoDien`, `Die
 ('MP0002', 'TÌNH NGƯỜI DUYÊN MA 2025', 104, 'Hài, Kinh Dị, Tình cảm', 'Choosak Iamsook', 'Yada Narilya Gulmongkolpech, \"Krist\" Perawat Sangpotirat, Choosak Iamsook, Pongsak', '2025-11-07', 'Tiếng Thái - Phụ đề Tiếng Việt; Lồng tiếng Việt', 'Lấy cảm hứng từ truyền thuyết dân gian Thái Lan về hồn ma Mae Nak, Tình Người Duyên Ma: Nhắm Mak Yêu Luôn kể câu chuyện tình vượt thời gian giữa nàng Nak và chàng Mak. Xuyên không đến 200 năm sau, Nak bất ngờ được vào vai nữ chính trong chính bộ phim về truyền thuyết của mình. Tình cờ thay, vai nam chính lại được thủ bởi Mak - lúc này đã là một nam diễn viên nổi tiếng toàn quốc. Ở đây, Nak phải chinh phục lại trái tim Mak trong vòng 30 ngày mà không được dùng đến ma lực, để có thể ở bên anh trọn đời trọn kiếp.', 'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/7/0/700x1000-peemak.jpg'),
 ('MP0003', 'CHAINSAW MAN - THE MOVIE: CHƯƠNG REZE', 100, 'Hành Động, Hoạt Hình, Thần Thoại', 'Tatsuya Yoshihara', 'Kikunosuke Toya, Tomori Kusunoki, Shôgo Sakata', '2025-09-26', 'Tiếng Nhật – Phụ đề Tiếng Việt, Tiếng Anh', 'Tiếp nối series anime chuyển thể đình đám, Chainsaw Man lần đầu tiên oanh tạc màn ảnh rộng trong một cuộc phiêu lưu hoành tráng, ngập tràn các phân cảnh hành động. Ở phần trước, ta đã biết Denji từng làm Thợ Săn Quỷ cho yakuza để trả món nợ của cha mẹ nhưng bị họ phản bội và trừ khử. Trong khoảnh khắc hấp hối, chú chó quỷ cưa máy Pochita (người bạn đồng hành trung thành của Denji) đã đưa ra một khế ước, cứu sống cậu và hợp thể cùng cậu. Từ đó, một Quỷ Cưa bất khả chiến bại ra đời. Giờ đây ở Chainsaw Man – The Movie: Chương Reze, trong cuộc chiến tàn khốc giữa quỷ dữ, thợ săn quỷ và những kẻ thù trong bóng tối, một cô gái bí ẩn tên Reze xuất hiện trong thế giới của Denji. Denji buộc phải đối mặt với trận chiến sinh tử khốc liệt nhất của mình, một trận chiến được tiếp sức bởi tình yêu trong một thế giới nơi mọi người phải sinh tồn mà không biết bất kỳ luật lệ nào.', 'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/3/5/350x495-csm.jpg'),
 ('MP0004', 'PHÁ ĐÁM - SINH NHẬT MẸ', 91, 'Gia đình, Hài, Kịch tính', 'Nguyễn Thanh Bình', 'Nghệ sĩ Ái Như, Thành Hội, Trần Kim Hải, Tín Nguyễn, Samuel An, Hồng Ánh, Bé Sam, Hoàng Phi, NSƯT Hữu Châu, Huy Khánh, Ngọc Sơn', '2025-10-31', 'Vietnamese', 'Bị giang hồ đe doạ, một người con trai đã làm đám ma giả cho mẹ mình để lừa tiền bảo hiểm. Nhưng kế hoạch bất hiếu điên rồ của anh liên tục bị phá đám bởi từ người lạ đến người quen, nhất là khi ngày anh đưa mẹ vào hòm lại tình cờ là ngày sinh nhật 60 tuổi của bà.', 'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/3/5/350x495-pdsnm.jpg'),
-('MP0005', 'GODZILLA MINUS ONE', 126, 'Hành Động, Khoa Học Viễn Tưởng, Phiêu Lưu', 'Takashi Yamazaki', 'Ryûnosuke Kamiki, Minami Hamabe, Yuki Yamada,...', '2025-11-07', 'Japanese - Vietnamese & English subtitle', 'Năm 1945, khi Thế chiến thứ Hai đang đi đến hồi kết, phi công Nhật Bản Koichi Shikishima bất ngờ chạm trán một quái vật biển đến từ cõi ngoài, mà người dân trên đảo Odo gọi là Godzilla. Bị giày vò bởi nỗi tội lỗi của kẻ sống sót — vì không thể bắn hạ con quái vật bằng súng gắn trên máy bay, và vì đã bỏ lại nhiệm vụ cảm tử của mình — Shikishima tìm được chút niềm an ủi mong manh bên Noriko, một người phụ nữ sống sót sau các đợt không kích Tokyo, và Akiko, một bé gái mồ côi. Năm tháng trôi qua, Shikishima dần mở lòng với Noriko và những người xung quanh. Nhưng bóng ma quá khứ — lần chạm trán năm xưa với Godzilla, nay đã biến đổi và nhiễm phóng xạ — lại một lần nữa trỗi dậy, khi toàn bộ nước Nhật chìm trong tuyệt vọng và kinh hoàng.', 'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/_/o/_option_1_g-1_full_poster_outline_up.jpg');
+('MP0005', 'GODZILLA MINUS ONE', 126, 'Hành Động, Khoa Học Viễn Tưởng, Phiêu Lưu', 'Takashi Yamazaki', 'Ryûnosuke Kamiki, Minami Hamabe, Yuki Yamada,...', '2025-11-07', 'Japanese - Vietnamese & English subtitle', 'Năm 1945, khi Thế chiến thứ Hai đang đi đến hồi kết, phi công Nhật Bản Koichi Shikishima bất ngờ chạm trán một quái vật biển đến từ cõi ngoài, mà người dân trên đảo Odo gọi là Godzilla. Bị giày vò bởi nỗi tội lỗi của kẻ sống sót — vì không thể bắn hạ con quái vật bằng súng gắn trên máy bay, và vì đã bỏ lại nhiệm vụ cảm tử của mình — Shikishima tìm được chút niềm an ủi mong manh bên Noriko, một người phụ nữ sống sót sau các đợt không kích Tokyo, và Akiko, một bé gái mồ côi. Năm tháng trôi qua, Shikishima dần mở lòng với Noriko và những người xung quanh. Nhưng bóng ma quá khứ — lần chạm trán năm xưa với Godzilla, nay đã biến đổi và nhiễm phóng xạ — lại một lần nữa trỗi dậy, khi toàn bộ nước Nhật chìm trong tuyệt vọng và kinh hoàng.', 'https://www.cgv.vn/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/_/o/_option_1_g-1_full_poster_outline_up.jpg'),
+('MP0006', '5 CENTIMET TRÊN GIÂY', 90, 'Hoạt Hình', 'Shinkai Makoto', 'Takaki , Akari', '2025-12-05', ' Tiếng Nhật – phụ đề Tiếng Việt', 'Câu chuyện cảm động về Takaki và Akari, đôi bạn thuở thiếu thời dần bị chia cắt bởi thời gian và khoảng cách. Qua ba giai đoạn khác nhau trong cuộc đời, hành trình khắc họa những ký ức, cuộc hội ngộ và sự xa cách của cặp đôi, với hình ảnh hoa anh đào rơi – 5cm/giây – như ẩn dụ cho tình yêu mong manh và thoáng chốc của tuổi trẻ.\r\n', 'https://www.cgv.vn/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/5/c/5cm_logo_localize_mkt_material_digital_470x700.jpg'),
+('MP0007', 'AVATAR 3: LỬA VÀ TRO TÀN', 159, 'Hành Động, Khoa Học Viễn Tưởng, Phiêu Lưu', 'James Cameron', 'Giovanni Ribisi, Kate Winslet, Zoe Saldaña', '2025-12-19', 'Tiếng Anh - Phụ đề tiếng Việt ', 'Avatar: Lửa Và Tro Tàn, dự kiến ra rạp ngày 19.12.2025', 'https://www.cgv.vn/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/c/g/cgv_350x495_1_2.jpg'),
+('MP0008', 'HOÀNG TỬ QUỶ', 117, 'Kinh Dị', 'Trần Hữu Tấn', 'Anh Tú Atus, Lương Thế Thành, Hoàng Linh Chi, Huỳnh Thanh Trực, Rima Thanh Vy, Lê Hà Phương, Duy Luân,...', '2025-11-26', 'Tiếng Việt', 'Hoàng Tử Quỷ xoay quanh Thân Đức - một hoàng tử được sinh ra nhờ tà thuật. Trốn thoát khỏi cung cấm, Thân Đức tham vọng giải thoát Quỷ Xương Cuồng khỏi Ải Mắt Người để khôi phục Xương Cuồng Giáo. Nhưng kế hoạch của Thân Đức chỉ thành hiện thực khi hắn có đủ cả hai “nguyên liệu” - Du Hồn Giả và Bạch Hổ Nguyên Âm. Đội lốt một lang y hiền lành, muốn chữa bệnh cứu người, Thân Đức lên đường đến làng Hủi và đụng độ trưởng làng Lỗ Đạt mạnh mẽ, liệu hắn có thể đạt được âm mưu tà ác của mình?', 'https://www.cgv.vn/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/h/t/htq_main_poster.jpg'),
+('MP0009', 'Quán Kỳ Nam', 135, 'Lãng mạn, Tâm lý', 'Lê Nhật Quang (Leon Le)', 'Liên Bỉnh Phát, Đỗ Thị Hải Yến, Trần Thế Mạnh, Ngô Hồng Ngọc, Lý Kiều Hạnh, Lê Văn Thân,...', '2025-12-18', 'Tiếng Việt', 'Với sự nâng đỡ của người chú quyền lực, Khang được giao cho công việc dịch cuốn “Hoàng Tử Bé” và dọn vào căn hộ bỏ trống ở khu chung cư cũ. Anh làm quen với cô hàng xóm tên Kỳ Nam, một góa phụ từng nổi danh trong giới nữ công gia chánh và giờ lặng lẽ với nghề nấu cơm tháng. Một tai nạn xảy ra khiến Kỳ Nam không thể tiếp tục công việc của mình. Khang đề nghị giúp đỡ và mối quan hệ của họ dần trở nên sâu sắc, gắn bó. Liệu mối quan hệ của họ có thể tồn tại lâu dài giữa những biến động củа xã hội thời bấy giờ?', 'https://www.cgv.vn/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/3/5/350x4950-qkn_1.jpg'),
+('MP0010', 'PHI VỤ ĐỘNG TRỜI 2', 107, 'Gia đình, Hành Động, Phiêu Lưu, Thần thoại', ' Jared Bush, Byron Howard', 'Jason Bateman, Quinta Brunson, Fortune Feimster', '2025-12-11', 'Tiếng Anh - Phụ đề Tiếng Việt; Lồng tiếng Việt', 'ZOOTOPIA 2 trở lại sau 9 năm Đu OTP Nick & Judy ', 'https://www.cgv.vn/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/c/g/cgv_350x495_1_1.jpg');
 
 -- --------------------------------------------------------
 
@@ -2417,7 +2422,24 @@ INSERT INTO `suatchieu` (`MaSuatChieu`, `MaPhim`, `MaPhong`, `ThoiGianBatDau`, `
 ('S002', 'MP0003', 'P102', '2025-11-20 15:30:00', 95000.00),
 ('S003', 'MP0004', 'P202', '2025-11-20 19:45:00', 90000.00),
 ('S004', 'MP0002', 'P301', '2025-11-20 22:30:00', 120000.00),
-('S005', 'MP0005', 'P403', '2025-11-21 14:00:00', 85000.00);
+('S005', 'MP0005', 'P403', '2025-11-21 14:00:00', 85000.00),
+('S006', 'MP0001', 'P402', '2025-11-20 17:00:00', 80000.00),
+('S007', 'MP0001', 'P501', '2025-11-20 19:30:00', 110000.00),
+('S008', 'MP0004', 'P302', '2025-11-21 10:30:00', 85000.00),
+('S009', 'MP0004', 'P103', '2025-11-21 16:00:00', 95000.00),
+('S010', 'MP0003', 'P101', '2025-11-20 20:00:00', 110000.00),
+('S011', 'MP0002', 'P201', '2025-11-20 17:30:00', 105000.00),
+('S012', 'MP0005', 'P203', '2025-11-21 11:00:00', 85000.00),
+('S013', 'MP0001', 'P202', '2025-11-21 21:00:00', 90000.00),
+('S014', 'MP0001', 'P303', '2025-11-20 18:45:00', 90000.00),
+('S015', 'MP0005', 'P301', '2025-11-21 22:00:00', 130000.00),
+('S016', 'MP0003', 'P401', '2025-11-20 10:30:00', 100000.00),
+('S017', 'MP0004', 'P403', '2025-11-21 19:15:00', 90000.00),
+('S018', 'MP0002', 'P502', '2025-11-20 13:00:00', 80000.00),
+('S019', 'MP0003', 'P503', '2025-11-21 17:45:00', 85000.00),
+('S020', 'MP0005', 'P501', '2025-11-21 20:15:00', 110000.00),
+('S021', 'MP0002', 'P102', '2025-11-21 09:30:00', 80000.00),
+('S022', 'MP0001', 'P302', '2025-11-22 14:30:00', 85000.00);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -2514,3 +2536,32 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE TABLE `datphongthue` (
+  `MaDatPhong` varchar(15) NOT NULL,
+  `MaKhachHang` varchar(10) NOT NULL,
+  `MaPhong` varchar(10) NOT NULL,
+  `MaPhim` varchar(10) DEFAULT NULL, -- Mã phim, có thể NULL nếu thuê phòng không kèm chiếu phim
+  `MaKhuyenMai` varchar(10) DEFAULT NULL, -- Thêm cột khuyến mãi (tương tự bảng `datve`)
+  `ThoiGianBatDau` datetime NOT NULL,
+  `ThoiGianKetThuc` datetime NOT NULL,
+  `TongTienThue` decimal(10,2) NOT NULL,
+  `PhuongThucThanhToan` varchar(50) DEFAULT NULL, -- Thêm cột Phương thức thanh toán (tương tự bảng `datve`)
+  `MucDichThue` varchar(100) DEFAULT NULL,
+  `NgayDat` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `TrangThaiXacNhan` varchar(20) DEFAULT 'Pending',
+  `TrangThaiThanhToan` varchar(20) DEFAULT 'ChuaThanhToan',
+  PRIMARY KEY (`MaDatPhong`),
+  
+  -- Khóa ngoại
+  FOREIGN KEY (`MaKhachHang`) REFERENCES `khachhang`(`MaKhachHang`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (`MaPhong`) REFERENCES `phongchieu`(`MaPhong`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  FOREIGN KEY (`MaPhim`) REFERENCES `phim`(`MaPhim`) ON DELETE SET NULL ON UPDATE CASCADE, -- Dùng SET NULL vì cột MaPhim là NULLABLE
+  FOREIGN KEY (`MaKhuyenMai`) REFERENCES `khuyenmai`(`MaKhuyenMai`) ON DELETE SET NULL ON UPDATE CASCADE, -- Thêm khóa ngoại cho MaKhuyenMai
+  
+  -- Indexes (để tăng tốc độ tìm kiếm)
+  KEY `idx_makhachhang` (`MaKhachHang`),
+  KEY `idx_maphong` (`MaPhong`),
+  KEY `idx_maphim` (`MaPhim`),
+  KEY `idx_makm` (`MaKhuyenMai`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

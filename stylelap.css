@@ -494,7 +494,88 @@ h1, h2 {
     text-transform: uppercase;
 }
 
+<!-- /* css tìm kiếm */
+.form_tim{
+    display: flex;
+    gap: 3%;
+}
+.form_tim input{
+    width: 100%;
+}
+.menu li.search-box {
+    margin-left: 15%;
+    flex-grow: 1;
+}
+.kq_tim{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2%;
+}
 
+
+.movie-card_search{
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 75vh;
+    width: 80%;
+    margin-left: 10%;
+}
+.movie-card_search:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+.filter-container {
+    position: relative;
+    float: right;
+    margin-top: -4%;
+    margin-right: 7%;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    background: #e60431;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filter-box {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.filter-box select {
+    width: 100%;
+    padding: 7px;
+    margin-bottom: 10px;
+}
+
+.filter-box button {
+    width: 100%;
+    padding: 8px;
+    background: #e60431;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
 /* Mobile - 480px and below */
 @media (max-width: 480px) {
     .wrapper {

@@ -80,7 +80,17 @@ h1, h2 {
 .menu li a:hover {
     background-color: #a3182d;
 }
-
+.form_tim{
+    display: flex;
+    gap: 3%;
+}
+.form_tim input{
+    width: 100%;
+}
+.menu li.search-box {
+    margin-left: 15%;
+    flex-grow: 1;
+}
 /* --- MAIN CONTENT --- */
 .content-container {
     display: flex;

@@ -30,6 +30,12 @@
                      <li><a href="<?php echo BASE_URL; ?>/Login&Register/Login.php">Đăng nhập</a></li>
                     <li><a href="<?php echo BASE_URL; ?>/Login&Register/Register.php">Đăng ký</a></li>
                 <?php endif; ?>
+                <li class="search-box">
+                    <form action="./search.php" method="GET" class="form_tim">
+                        <input type="text" name="keyword" required placeholder="Tìm phim..." value="<?php echo isset($_GET['keyword']) ? $_GET['keyword'] : ''; ?>" >
+                        <button type="submit" style="padding: 6px 12px;">Tìm</button>
+                    </form>
+                </li>
             </ul>
         </div>
         

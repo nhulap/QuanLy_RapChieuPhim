@@ -43,8 +43,81 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thông tin cá nhân</title>
     <link rel="stylesheet" href="../styleproflie.css">
+    <style>
+        :root {
+            --primary-red: #d11e3b;
+            --dark-red: #a3182d;
+        }
+
+        .wrapper { 
+            max-width: 800px; 
+            width: 90%; 
+            margin: 20px auto; 
+            margin-top: 80px; 
+        }
+        
+        .btn-back-fixed {
+            position: fixed; 
+            top: 20px; 
+            left: 20px; 
+            width: 45px;
+            height: 45px;
+            border-radius: 50%; /* Tạo hình tròn */
+            background-color: var(--primary-red); 
+            color: white;
+            text-align: center;
+            line-height: 45px; 
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, transform 0.2s;
+            z-index: 1000;
+        }
+
+        .btn-back-fixed:hover {
+            background-color: var(--dark-red);
+            transform: scale(1.05);
+        }
+        .btn-back-fixed span {
+            display: block;
+            line-height: 45px; 
+        }
+
+        @media (max-width: 768px) {
+            .btn-back-fixed {
+                top: 15px; 
+                left: 15px;
+                width: 40px;
+                height: 40px;
+                line-height: 40px;
+                font-size: 18px;
+            }
+        }
+        
+        .btn-logout {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: var(--primary-red);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: var(--dark-red);
+        }
+    </style>
 </head>
 <body>
+    
+    <a href="../index.php" class="btn-back-fixed" title="Quay lại Trang Chủ">
+        <span>&larr;</span>
+    </a>
+
     <div class="wrapper">
         <div class="main">
             <h2>👤 Thông tin Tài khoản Cá nhân</h2>
@@ -62,7 +135,7 @@ mysqli_close($conn);
             <?php endif; ?>
 
             <hr>
-             <a href="../chi_tiet_phim/lich_su_dat_ve.php" class="btn-logout">Xem Lịch Sử</a>
+            <a href="../chi_tiet_phim/lich_su_dat_ve.php" class="btn-logout">Xem Lịch Sử</a>
             <a href="../Login&Register/logout.php" class="btn-logout">Đăng xuất</a>
         </div>
     </div>

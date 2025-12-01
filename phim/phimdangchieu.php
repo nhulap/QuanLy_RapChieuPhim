@@ -44,165 +44,171 @@ $result_dang_chieu = mysqli_query($conn, $sql_dang_chieu);
              margin:0;
              padding:0; 
              font-family: Arial,sans-serif;
-              background-color: #f0f0f0;
+             background-color: #f0f0f0;
              }
         .wrapper {
              width:100%;
-              margin:0;
-               max-width:none; 
-               background:#fff;
-                box-shadow:0 0 10px rgba(0,0,0,0.1); 
-            }
+             margin:0;
+             max-width:none; 
+             background:#fff;
+             box-shadow:0 0 10px rgba(0,0,0,0.1); 
+             }
         .header {
              height:120px; 
              width:100%;
-              background:#fff;
-               display:flex;
-               align-items:center; 
-               justify-content:center;
-                padding:10px 0; 
-            }
+             background:#fff;
+             display:flex;
+             align-items:center; 
+             justify-content:center;
+             padding:10px 0; 
+             }
         .logo {
              font-size:36px; 
              font-weight:bold;
-              color:#d11e3b;
-               text-transform:uppercase; 
-            }
+             color:#d11e3b;
+             text-transform:uppercase; 
+             }
         .menu {
              height:50px; 
              width:100%; 
              background:#d11e3b; 
-            }
-        .menu ul { list-style:none;
-             margin:0 auto;
-              padding:0 20px;
-               display:flex;
-                align-items:center;
-                 max-width:1200px; 
-                 height:100%;
-                 }
+             }
+        .menu ul { 
+            list-style:none;
+             margin:0; 
+             max-width:none; 
+             
+             padding:0 20px; 
+             display:flex;
+             align-items:center;
+             height:100%;
+             justify-content: flex-start; 
+             flex-wrap: nowrap;
+             }
         .menu li {
              padding:0 15px;
+             flex-shrink: 0;
              }
         .menu li a { 
-            text-decoration:none;
+             text-decoration:none;
              color:#fff;
-              font-weight:bold;
-               font-size:14px;
-                text-transform:uppercase;
-                 padding:15px 5px;
-                  transition:0.3s; 
-                }
+             font-weight:bold;
+             font-size:14px;
+             text-transform:uppercase;
+             padding:15px 5px;
+             transition:0.3s; 
+             }
         .menu li a:hover { 
-            background-color:#a3182d;
-         }
+             background-color:#a3182d;
+          }
         .menu li form { 
-            margin:0; 
-        }
+             margin:0; 
+         }
         .menu select {
              padding:5px;
-              border-radius:3px;
-               font-size:14px;
-            
-            }
+             border-radius:3px;
+             font-size:14px;
+             border: none; 
+             }
 
         .main {
              min-height:400px;
-              max-width:1200px;
-               margin:0 auto; 
-               padding:20px;
-                box-sizing:border-box;
-                 background:#fff;
-                 }
+             max-width:1200px; 
+             margin:0 auto; 
+             padding:20px;
+             box-sizing:border-box;
+             background:#fff;
+             }
         .section-title {
              font-size:28px; 
              font-weight:bold;
-              color:#333;
-               margin-bottom:15px;
-                border-bottom:2px solid #d11e3b;
-                 padding-bottom:5px; 
-                }
-        .movie-grid { display:grid;
+             color:#333;
+             margin-bottom:15px;
+             border-bottom:2px solid #d11e3b;
+             padding-bottom:5px; 
+             }
+        .movie-grid { 
+            display:grid;
              grid-template-columns:repeat(4,1fr);
-              gap:20px;
-               padding-top:10px;
+             gap:20px;
+             padding-top:10px;
              }
         .movie-card { 
-            border:1px solid #ddd;
+             border:1px solid #ddd;
              border-radius:5px;
-              overflow:hidden;
-              box-shadow:0 2px 5px rgba(0,0,0,0.1);
-               transition:transform 0.2s;
-                background:#fff;
-                 cursor:pointer;
-                  text-decoration:none;
-                   color:inherit; 
-                }
+             overflow:hidden;
+             box-shadow:0 2px 5px rgba(0,0,0,0.1);
+             transition:transform 0.2s;
+             background:#fff;
+             cursor:pointer;
+             text-decoration:none;
+             color:inherit; 
+             }
         .movie-card:hover {
              transform:translateY(-5px);
-              box-shadow:0 8px 15px rgba(0,0,0,0.2);
+             box-shadow:0 8px 15px rgba(0,0,0,0.2);
              }
         .movie-poster {
              width:100%;
-              aspect-ratio:3/4;
-               display:block;
-                object-fit:cover; 
-            }
+             aspect-ratio:3/4;
+             display:block;
+             object-fit:cover; 
+             }
         .movie-info {
              padding:10px; 
              text-align:center;
              }
         .movie-info h4 {
-            margin:0 0 5px 0;
+             margin:0 0 5px 0;
              font-size:16px;
-              color:#333;
-               height:40px;
-               overflow:hidden;
-                text-overflow:ellipsis;
-                 display:-webkit-box;
-                  -webkit-line-clamp:2;
-                   -webkit-box-orient:vertical;
-                    line-height:1.2;
-                     text-transform:uppercase;
-                      font-weight:bold;
-                     }
+             color:#333;
+             height:40px;
+             overflow:hidden;
+             text-overflow:ellipsis;
+             display:-webkit-box;
+             -webkit-line-clamp:2;
+             -webkit-box-orient:vertical;
+             line-height:1.2;
+             text-transform:uppercase;
+             font-weight:bold;
+             }
         .movie-info p {
              margin:5px 0; 
              font-size:14px;
-              color:#666; 
-            }
+             color:#666; 
+             }
         .movie-info .btn-buy {
              display:inline-block;
-              background-color:#d11e3b;
-               color:white;
-                padding:8px 15px; 
-                border-radius:3px;
-                 text-decoration:none; 
-                 font-weight:bold; 
-                 margin-top:5px;
-                  transition:0.2s;
-                 }
+             background-color:#d11e3b;
+             color:white;
+             padding:8px 15px; 
+             border-radius:3px;
+             text-decoration:none; 
+             font-weight:bold; 
+             margin-top:5px;
+             transition:0.2s;
+             }
         .movie-info .btn-buy:hover { 
-            background-color:#a3182d;
-         }
+             background-color:#a3182d;
+          }
         .footer { 
-            height:100px;
+             height:100px;
              width:100%;
-              background:#222; 
-              color:#ccc; 
-              padding:20px 0;
-               text-align:center;
-                font-size:12px; 
-                box-sizing:border-box; 
-            }
+             background:#222; 
+             color:#ccc; 
+             padding:20px 0;
+             text-align:center;
+             font-size:12px; 
+             box-sizing:border-box; 
+             }
         .movie-info a {
              text-decoration:none;
-              color:inherit; 
-            
-            }
+             color:inherit; 
+             
+             }
         .movie-info a:hover { 
-            color:#d11e3b; 
-        }
+             color:#d11e3b; 
+         }
     </style>
 </head>
 <body>
@@ -213,7 +219,7 @@ $result_dang_chieu = mysqli_query($conn, $sql_dang_chieu);
         <ul>
             <li><a href="../Index.php">Trang Chủ</a></li>
             <li><a href="./phimdangchieu.php">Phim Đang Chiếu</a></li>
-            <li><a href="./phimsapchieu.php">Phim Sắp Chiếu</a></li>
+            <li><a href="./phimsapchieu.php">Phim Sắp Chiếu</a></li> 
             <li>
                 <form method="GET" action="">
                     <select name="theloai" onchange="this.form.submit()">

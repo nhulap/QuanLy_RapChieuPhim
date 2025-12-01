@@ -2,15 +2,14 @@
 session_start();
 require "../Connection.php"; 
 
+
 $ma_phim = $_GET['MaPhim'] ?? die("Thiếu Mã Phim.");
 $ma_phim_safe = mysqli_real_escape_string($conn, $ma_phim);
 
-// Lấy thông tin phim
 $sql_phim = "SELECT TenPhim FROM phim WHERE MaPhim = '$ma_phim_safe'";
 $phim_info = mysqli_fetch_assoc(mysqli_query($conn, $sql_phim));
 $ten_phim = $phim_info['TenPhim'] ?? 'Không xác định';
 
-// Lấy tất cả suất chiếu cho phim này
 $sql_suat = "SELECT R.TenRap, P.TenPhong, SC.MaSuatChieu, SC.ThoiGianBatDau 
              FROM suatchieu SC 
              JOIN phongchieu P ON SC.MaPhong = P.MaPhong
@@ -27,9 +26,8 @@ $result_suat = mysqli_query($conn, $sql_suat);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chọn Suất Chiếu - <?php echo htmlspecialchars($ten_phim); ?></title>
     <style>
-       /* ======================================================= */
-/* CHUNG CHO TRANG CHỌN SUẤT CHIẾU */
-/* ======================================================= */
+
+/* --- CSS CHUNG --- */
 body {
     margin: 0;
     padding: 0;
@@ -47,7 +45,39 @@ body {
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
     min-height: 400px;
     margin-top: 150px;
+    position: relative; /* Không còn cần thiết cho nút Back, nhưng giữ để bố cục ổn định */
 }
+
+.btn-back {
+    position: fixed; 
+    top: 20px; 
+    left: 20px; 
+    
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    
+    background-color: #d11e3b;
+    color: white;
+    text-align: center;
+    line-height: 45px;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s, transform 0.2s;
+    z-index: 1000;
+}
+
+.btn-back:hover {
+    background-color: #a3182d;
+    transform: scale(1.05);
+}
+.btn-back span {
+    display: block;
+    line-height: 45px; 
+}
+
 
 h1, h2 {
     color: #d11e3b;
@@ -103,6 +133,7 @@ h1, h2 {
         width: 95%;
         padding: 25px 15px;
         min-height: 550px;
+        margin-top: 80px; 
     }
     .showtimes-table th, .showtimes-table td {
         padding: 12px 8px;
@@ -110,6 +141,14 @@ h1, h2 {
     }
     h1, h2 {
         font-size: 20px;
+    }
+    .btn-back {
+        top: 15px; 
+        left: 15px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 18px;
     }
 }
 
@@ -135,12 +174,18 @@ h1, h2 {
     </style>
 </head>
 <body>
+    
+    <a href="chi_tiet_phim.php?MaPhim=<?php echo urlencode($ma_phim); ?>" class="btn-back" title="Quay lại chi tiết phim">
+        <span>&larr;</span>
+    </a>
+
     <div class="container">
+        
         <h1>🎬 Đặt Vé: <?php echo htmlspecialchars($ten_phim); ?></h1>
         <h2>Chọn Rạp và Thời Gian Chiếu</h2>
 
         <?php if (mysqli_num_rows($result_suat) == 0): ?>
-            <p>Hiện không có suất chiếu nào cho phim này.</p>
+            <p style="text-align: center;">Hiện không có suất chiếu nào cho phim này.</p>
         <?php else: ?>
             <table class="showtimes-table">
                 <thead>

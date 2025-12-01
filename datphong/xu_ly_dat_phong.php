@@ -6,7 +6,6 @@ require "../Connection.php";
 
 // 1. Kiểm tra và gán MaKhachHang từ Session
 if (!isset($_SESSION['user_id'])) {
-    // ⭐ QUAN TRỌNG: Chuyển hướng người dùng chưa đăng nhập ⭐
     // Tùy chọn: Lưu lại URL để chuyển hướng quay lại sau khi đăng nhập
     $_SESSION['redirect_url'] = '../datphong/datphong.php'; 
     header("Location: ../Login&Register/Login.php");
@@ -24,7 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 // --- PHẦN 2: LẤY VÀ LÀM SẠCH DỮ LIỆU ---
 
 $ma_phong = $_POST['MaPhong'] ?? '';
-// ⭐ CỘT MỚI: Lấy MaPhim và xử lý NULL ⭐
 $ma_phim_raw = $_POST['MaPhim'] ?? 'none';
 $thoi_gian_bat_dau_str = $_POST['ThoiGianBatDau'] ?? '';
 $thoi_gian_ket_thuc_str = $_POST['ThoiGianKetThuc'] ?? '';
@@ -43,7 +41,7 @@ $muc_dich_thue_safe = mysqli_real_escape_string($conn, $muc_dich_thue);
 $ma_khach_hang_safe = mysqli_real_escape_string($conn, $ma_khach_hang);
 $tong_tien_safe = (float)$tong_tien;
 
-// ⭐ Xử lý MaPhim để chèn 'NULL' hoặc 'Giá trị có dấu nháy đơn' ⭐
+// Xử lý MaPhim để chèn 'NULL' hoặc 'Giá trị có dấu nháy đơn'
 if ($ma_phim_raw === 'none' || empty($ma_phim_raw)) {
     $ma_phim_safe = 'NULL'; 
 } else {
@@ -74,7 +72,7 @@ $sql_check_sc = "SELECT MaSuatChieu FROM suatchieu
                  AND DATE_ADD(ThoiGianBatDau, INTERVAL 3 HOUR) > '$thoi_gian_bat_dau_safe'";
 $result_check_sc = mysqli_query($conn, $sql_check_sc);
 
-// Kiểm tra với các đơn thuê phòng khác đang 'Pending' hoặc 'Approved' (thanh toán/chưa thanh toán)
+// Kiểm tra với các đơn thuê phòng khác đang 'Pending' hoặc 'Approved'
 $sql_check_dpt = "SELECT MaDatPhong FROM datphongthue 
                   WHERE MaPhong = '$ma_phong_safe' AND TrangThaiXacNhan IN ('Pending', 'Approved')
                   AND ThoiGianBatDau < '$thoi_gian_ket_thuc_safe' 
@@ -89,13 +87,26 @@ if (mysqli_num_rows($result_check_sc) > 0 || mysqli_num_rows($result_check_dpt) 
 // --- PHẦN 4: LƯU VÀO DB VÀ THÔNG BÁO ---
 
 // 5. THỰC HIỆN LƯU VÀO CƠ SỞ DỮ LIỆU
-// ⭐ SỬA: Thêm MaPhim, TrangThaiXacNhan = 'Pending' (Mới) ⭐
 $sql_insert = "INSERT INTO datphongthue (MaDatPhong, MaKhachHang, MaPhong, MaPhim, ThoiGianBatDau, ThoiGianKetThuc, TongTienThue, MucDichThue, TrangThaiXacNhan, TrangThaiThanhToan)
                VALUES ('$new_id', '$ma_khach_hang_safe', '$ma_phong_safe', $ma_phim_safe, '$thoi_gian_bat_dau_safe', '$thoi_gian_ket_thuc_safe', $tong_tien_safe, '$muc_dich_thue_safe', 'Pending', 'ChuaThanhToan')";
 
 if (mysqli_query($conn, $sql_insert)) {
     
-    // ⭐ THÀNH CÔNG: Hiển thị thông báo chờ xác nhận ⭐
+    // ⭐ PHẦN SỬA LỖI ĐƯỜNG DẪN MẠNH MẼ NHẤT ⭐
+    // 1. Xác định giao thức (http/https)
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    
+    // 2. Lấy host (ví dụ: localhost)
+    $host = $_SERVER['HTTP_HOST'];
+    
+    // 3. Lấy đường dẫn thư mục hiện tại (ví dụ: /projectname/datphong)
+    $current_dir = dirname($_SERVER['PHP_SELF']);
+    $base_path = rtrim($current_dir, '/');
+
+    // 4. Tạo URL đầy đủ cho thanhtoan.php (Ví dụ: http://localhost/projectname/datphong/thanhtoan.php?order=DP...)
+    $link_to_thanhtoan = $protocol . $host . $base_path . '/thanhtoan.php?order=' . $new_id;
+    // END: PHẦN SỬA LINK
+    
     $_SESSION['datphong_id'] = $new_id;
     
     mysqli_close($conn);
@@ -132,8 +143,10 @@ if (mysqli_query($conn, $sql_insert)) {
             </div>
 
             <p>
-                <a href='../thanhtoan/thanh_toan.php?order=$new_id'>👉 TIẾN HÀNH THANH TOÁN NGAY</a> 
+                <!-- SỬ DỤNG LINK ĐỘNG VÀ TUYỆT ĐỐI -->
+                <a href='{$link_to_thanhtoan}'>👉 TIẾN HÀNH THANH TOÁN NGAY</a> 
                 | 
+                <!-- Link quay lại trang chủ -->
                 <a href='../Index.php'>QUAY LẠI TRANG CHỦ</a>
             </p>
         </div>

@@ -94,9 +94,7 @@ ob_start();
                     Đang xem suất chiếu trong khoảng: <strong><?= htmlspecialchars($rangeLabel) ?></strong>
                 </div>
             </div>
-            <a href="index.php?module=showtime&action=index" class="btn btn-sm btn-secondary">
-                <i class="fas fa-arrow-left"></i> Chọn rạp khác
-            </a>
+
         </div>
     </div>
 

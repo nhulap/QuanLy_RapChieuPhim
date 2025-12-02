@@ -11408,12 +11408,12 @@ body {
     border: 1px solid #222;
 }
 
-.cgv-card-header {
+/* .cgv-card-header {
     background: linear-gradient(90deg, #e71a0f, #b70d06);
     padding: 14px;
     color: #fff;
     border-radius: 6px;
-}
+} */
 
 .cgv-input {
     background-color: #1b1b1b;
@@ -11526,5 +11526,266 @@ input[type="number"].cgv-input:focus {
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.5);
     border-color: #e71a0f;
+}
+
+/* Card dùng cho biểu đồ */
+.cgv-chart-card {
+    height: 320px;          /* có thể chỉnh 280–340 tuỳ layout */
+}
+
+.cgv-chart-card .card-body {
+    height: 100%;
+}
+
+/* Wrapper để Chart.js không phá layout */
+.cgv-chart-wrapper {
+    position: relative;
+    height: 100%;
+}
+
+/* Ép canvas fit trong wrapper, không tự kéo dài trang */
+.cgv-chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Phong cách CGV tone đen - đỏ */
+.cgv-dashboard-header {
+    background: #111;
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cgv-dashboard-header h4 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.cgv-dashboard-header .badge-range {
+    background: #e71a0f;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.kpi-card {
+    background: #1b1b1b;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+.kpi-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+.kpi-sub {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.cgv-card {
+    background: #181818;
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin-bottom: 18px;
+}
+
+.cgv-card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    background: #202020;
+}
+
+.cgv-card-header h6 {
+    margin: 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.cgv-card-body {
+    padding: 14px 16px;
+    color: #ddd;
+}
+
+.cgv-badge-status {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+.status-full {
+    background: #e71a0f;
+    color: #fff;
+}
+
+.status-low {
+    background: #ff9800;
+    color: #fff;
+}
+
+.status-many {
+    background: #4caf50;
+    color: #fff;
+}
+
+.table-dark-cgv {
+    width: 100%;
+    color: #ddd;
+    font-size: 13px;
+}
+
+.table-dark-cgv thead {
+    background: #202020;
+}
+
+.table-dark-cgv th,
+.table-dark-cgv td {
+    padding: 8px 10px;
+    white-space: nowrap;
+    border-bottom: 1px solid #333;
+}
+.navbar .fa-bell {
+    font-size: 18px;
+}
+.navbar .badge.bg-danger {
+    font-size: 11px;
+    padding: 2px 6px;
+}
+
+ .cgv-modal .modal-content {
+        background: #181818;
+        border-radius: 12px;
+        border: 1px solid #333;
+        color: #f5f5f5;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+
+    .cgv-modal .modal-header {
+        border-bottom: 1px solid #333;
+        background: linear-gradient(90deg, #111, #1f1f1f);
+        padding: 12px 16px;
+    }
+
+    .cgv-modal .modal-title {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cgv-modal .modal-title i {
+        color: #e71a0f;
+        font-size: 18px;
+    }
+
+    .cgv-modal .btn-close {
+        filter: invert(1);
+    }
+
+    .cgv-modal .modal-body {
+        padding: 16px 18px 10px;
+        font-size: 14px;
+    }
+
+    .cgv-modal #vip-confirm-message {
+        margin-bottom: 10px;
+        line-height: 1.5;       
+    }
+
+    .cgv-modal #vip-confirm-message strong {
+        color: #ffd54f;
+    }
+
+    .cgv-modal .form-label {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #bbb;
+        margin-bottom: 4px;
+    }
+
+    .cgv-modal textarea.form-control {
+        background: #111;
+        border: 1px solid #444;
+        color: #f5f5f5;
+        font-size: 13px;
+    }
+
+    .cgv-modal textarea.form-control:focus {
+        border-color: #e71a0f;
+        box-shadow: 0 0 0 0.15rem rgba(231,26,15,0.35);
+    }
+
+    .cgv-modal small.text-muted {
+        font-size: 11px;
+        color: #888 !important;
+    }
+
+    .cgv-modal .modal-footer {
+        border-top: 1px solid #333;
+        padding: 10px 16px 12px;
+    }
+
+    .cgv-modal .btn-secondary {
+        background: #444;
+        border-color: #555;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        padding: 6px 14px;
+    }
+
+    .cgv-modal .btn-secondary:hover {
+        background: #555;
+    }
+
+    .cgv-modal .btn-primary {
+        background: #e71a0f;
+        border-color: #e71a0f;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        padding: 6px 16px;
+        font-weight: 600;
+    }
+
+    .cgv-modal .btn-primary:hover {
+        background: #c21807;
+        border-color: #c21807;
+    }
+
+    
+    
+.cgv-card-header {
+    background: linear-gradient(90deg, #e71a0f, #b70d06);
+    color: #fff;
+    font-weight: 600;
 }
 

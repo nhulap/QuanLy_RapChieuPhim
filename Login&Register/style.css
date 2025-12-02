@@ -13,9 +13,11 @@
 
 body {
     /* Sử dụng background-color từ form/register */
-    background-color: rgb(229, 225, 219); 
-    font-family: Arial, sans-serif; /* Font chung cho toàn trang */
-    text-align: center; /* Áp dụng căn giữa cho nội dung trang */
+    background-color: rgb(229, 225, 219);
+    font-family: Arial, sans-serif;
+    /* Font chung cho toàn trang */
+    text-align: center;
+    /* Áp dụng căn giữa cho nội dung trang */
 }
 
 
@@ -33,7 +35,8 @@ input {
 }
 
 input:not([type="submit"]) {
-    text-align: left; /* Căn trái cho các ô nhập liệu (ngoại trừ nút Submit) */
+    text-align: left;
+    /* Căn trái cho các ô nhập liệu (ngoại trừ nút Submit) */
 }
 
 input::placeholder {
@@ -74,7 +77,9 @@ input::placeholder {
     width: 50%;
     margin: 0 23%;
 }
-
+#submit_regis input{
+    margin: 0 8%;
+}
 #btn_dn {
     width: 60%;
     display: flex;
@@ -84,15 +89,19 @@ input::placeholder {
     text-align: center;
     margin-top: -4%;
 }
+
 /* Sửa lại căn chỉnh cho input/p trong #btn_dn */
-#btn_dn input, #btn_dn p { 
+#btn_dn input,
+#btn_dn p {
     width: 100%;
     text-align: center;
-    margin-left: 0; /* Bỏ margin-left 40% để nó căn giữa/căn chỉnh theo flexbox */
+    margin-left: 0;
+    /* Bỏ margin-left 40% để nó căn giữa/căn chỉnh theo flexbox */
 }
 
 #submit_regis input:hover,
-#sub_login input:hover { /* Gộp hover của 2 nút submit */
+#sub_login input:hover {
+    /* Gộp hover của 2 nút submit */
     color: white;
     background-color: rgb(45, 42, 42);
     font-size: medium;
@@ -150,10 +159,11 @@ input::placeholder {
     justify-content: center;
     padding: 10px 0;
 }
+
 .logo {
     font-size: 36px;
     font-weight: bold;
-    color: #d11e3b; 
+    color: #d11e3b;
     text-transform: uppercase;
 }
 
@@ -161,7 +171,7 @@ input::placeholder {
 .menu {
     height: 50px;
     width: 100%;
-    background-color: #d11e3b; 
+    background-color: #d11e3b;
 }
 
 .menu ul {
@@ -171,7 +181,7 @@ input::placeholder {
     display: flex;
     height: 100%;
     align-items: center;
-    justify-content: flex-start; 
+    justify-content: flex-start;
 }
 
 .menu li {
@@ -190,6 +200,32 @@ input::placeholder {
 
 .menu li a:hover {
     background-color: #a3182d;
+}
+
+.form_tim {
+    display: flex;
+    gap: 3%;
+}
+
+.form_tim input {
+    width: 100%;
+    border-radius: 10px;
+
+}
+
+.form_tim button {
+    height: 5vh;
+    border-radius: 10px;
+}
+
+.form_tim button:hover {
+    background-color: #a3182d;
+    color: rgba(247, 242, 242, 0.9);
+}
+
+.menu li.search-box {
+    margin-left: 35%;
+    flex-grow: 1;
 }
 
 /* =======================================
@@ -243,7 +279,7 @@ input::placeholder {
     margin: 0 0 5px 0;
     font-size: 16px;
     color: #333;
-    height: 40px; 
+    height: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -251,7 +287,7 @@ input::placeholder {
 /* Nút Mua vé / Sắp chiếu */
 .movie-info .btn-buy {
     display: inline-block;
-    background-color: #d11e3b; 
+    background-color: #d11e3b;
     color: white;
     padding: 8px 15px;
     border-radius: 3px;
@@ -266,7 +302,7 @@ input::placeholder {
 }
 
 .movie-info .btn-buy.disabled {
-    background-color: #808080; 
+    background-color: #808080;
     cursor: default;
 }
 

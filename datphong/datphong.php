@@ -109,6 +109,28 @@ if (!empty($bat_dau) && !empty($ket_thuc)) {
             padding: 10px 0;
             box-sizing: border-box; 
         }
+                .form_tim {
+            display: flex;
+            gap: 3%;
+        }
+
+        .form_tim input {
+            width: 60%;
+            border-radius: 10px;
+
+        }
+        .form_tim button {
+            height: 5vh;
+            border-radius: 10px;
+        }
+        .form_tim button:hover {
+            background-color: #a3182d;
+            color:rgba(247, 242, 242, 0.9);
+        }
+        .menu li.search-box {
+            margin-left: 15%;
+            flex-grow: 1;
+        }
         .logo {
             font-size: 36px;
             font-weight: bold;

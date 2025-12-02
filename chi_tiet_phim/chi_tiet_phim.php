@@ -51,11 +51,34 @@ $page_title = $phim ? "Chi tiết Phim: " . $phim['TenPhim'] : 'Không tìm th�
         .menu li { padding: 0 15px; }
         .menu li a { text-decoration: none; color: #fff; font-weight: bold; font-size: 14px; text-transform: uppercase; padding: 15px 5px; transition: 0.3s; }
         .menu li a:hover { background-color: #a3182d; }
+        .form_tim {
+            display: flex;
+            gap: 3%;
+        }
+
+        .form_tim input {
+            width: 100%;
+            border-radius: 10px;
+
+        }
+        .form_tim button {
+            height: 5vh;
+            border-radius: 10px;
+        }
+        .form_tim button:hover {
+            background-color: #a3182d;
+            color:rgba(247, 242, 242, 0.9);
+        }
+        .menu li.search-box {
+            margin-left: 20%;
+            flex-grow: 1;
+        }
         .content-container { margin: 0 auto; padding: 0 20px; box-sizing: border-box; background: #fff; }
         .main { min-height: 400px; padding: 20px 0; box-sizing: border-box; background: #fff; }
         h2 { font-size: 28px; font-weight: bold; color: #333; margin: 30px 0 15px 0; }
         .footer { height: 100px; width: 100%; background: #222; color: #ccc; padding: 20px 0; text-align: center; font-size: 12px; box-sizing: border-box; }
 
+        
         /* ⭐⭐ CSS CHI TIẾT PHIM (TRANG TRÍ LẠI) ⭐⭐ */
         .page-content { padding: 30px 0; background: #fff; }
         .movie-detail-container { 

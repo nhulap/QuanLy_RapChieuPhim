@@ -249,14 +249,14 @@ $ten_ghe_str = implode(', ', $ten_ghe_arr);
                     <h2>Chọn Phương Thức Thanh Toán</h2>
 
                     <label>
-                        <input type="radio" name="PhuongThucThanhToan" value="TaiKhoan" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'disabled' : ''; ?>>
+                        <input type="radio" name="PhuongThucThanhToan" value="Số Dư Tài Khoản" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'disabled' : ''; ?>>
                         <span>Thanh toán bằng **Số dư tài khoản**</span> <?php if ($so_du_tai_khoan < $tong_tien_sau_giam): ?>
                             <span style="color: red;">* (Số dư không đủ)</span>
                         <?php endif; ?>
                     </label>
 
                     <label>
-                        <input type="radio" name="PhuongThucThanhToan" value="ViDienTu" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'checked' : ''; ?>>
+                        <input type="radio" name="PhuongThucThanhToan" value="Ví Điện Tử" required <?php echo ($so_du_tai_khoan < $tong_tien_sau_giam) ? 'checked' : ''; ?>>
                         <span>Thanh toán bằng **Ví điện tử/Thẻ Quốc Tế**</span>
                     </label>
 

@@ -1,309 +1,342 @@
 <?php
 session_start();
-require "../Connection.php"; 
+require "../Connection.php";
 
-// --- Lấy thông tin ---
-$ma_suat = $_GET['MaSuatChieu'] ?? die("Thiếu Mã Suat Chiếu.");
+$ma_suat = $_GET['MaSuatChieu'] ?? die("Thiếu Mã Suất Chiếu.");
 $ma_phim = $_GET['MaPhim'] ?? die("Thiếu Mã Phim.");
 
 $ma_suat_safe = mysqli_real_escape_string($conn, $ma_suat);
 $ma_phim_safe = mysqli_real_escape_string($conn, $ma_phim);
 
-// 1. Lấy thông tin phim, rạp, phòng, giá vé
+// 1. Lấy thông tin phim và suất chiếu
 $sql_info = "SELECT P.TenPhim, R.TenRap, PCH.TenPhong, SC.ThoiGianBatDau, SC.GiaVeCoBan
              FROM suatchieu SC
              JOIN phim P ON SC.MaPhim = P.MaPhim
              JOIN phongchieu PCH ON SC.MaPhong = PCH.MaPhong
              JOIN rapchieu R ON PCH.MaRap = R.MaRap
              WHERE SC.MaSuatChieu = '$ma_suat_safe'";
-             
+
 $result_info = mysqli_query($conn, $sql_info);
-if (!$result_info || mysqli_num_rows($result_info) == 0) {
-    die("Không tìm thấy thông tin suất chiếu.");
+if ($result_info === false) {
+    die("Lỗi truy vấn thông tin suất chiếu: " . mysqli_error($conn));
 }
 $info = mysqli_fetch_assoc($result_info);
 $ten_phim = $info['TenPhim'] ?? 'Phim';
-$gia_ve_co_ban = (float)($info['GiaVeCoBan'] ?? 0);
-$thoi_gian = date('H:i d/m/Y', strtotime($info['ThoiGianBatDau']));
+$gia_ve_co_ban = (float)($info['GiaVeCoBan'] ?? 90000);
 
-// 2. Lấy ghế đã đặt (Logic của bạn đã đúng)
-$sql_dat = "SELECT MaGheDaChon FROM datve WHERE MaSuatChieu = '$ma_suat_safe' AND TrangThaiThanhToan = 'ThanhCong'";
-$result_dat = mysqli_query($conn, $sql_dat); 
+// 2. Lấy ghế đã đặt (Giữ nguyên logic của bạn)
+$sql_dat = "
+    SELECT dv.MaGheDaChon
+    FROM datve dv
+    WHERE dv.MaSuatChieu = '$ma_suat_safe'
+      AND dv.TrangThaiThanhToan = 'Thanh Toán Thành Công'
+      AND NOT EXISTS (
+          SELECT 1 FROM hoantien ht
+          WHERE ht.MaDatVe = dv.MaDatVe
+            AND ht.TrangThaiHoan = 'Hoàn Tiền Thành Công'
+      )
+";
+$result_dat = mysqli_query($conn, $sql_dat);
 
-$ghe_da_dat = []; 
+if ($result_dat === false) {
+    // Để tránh lỗi nếu bảng hoantien không tồn tại, bạn có thể comment dòng này nếu cần
+    // die("Lỗi truy vấn ghế đã đặt: " . mysqli_error($conn) . " | SQL: " . $sql_dat); 
+}
+
+$ghe_da_dat = [];
 if ($result_dat) {
-    while($row = mysqli_fetch_assoc($result_dat)) {
+    while ($row = mysqli_fetch_assoc($result_dat)) {
         if (!empty($row['MaGheDaChon'])) {
             $ghe_da_dat = array_merge($ghe_da_dat, explode(',', $row['MaGheDaChon']));
         }
     }
 }
 $ghe_da_dat = array_map('trim', $ghe_da_dat);
-$ghe_da_dat = array_filter($ghe_da_dat); 
+$ghe_da_dat = array_filter($ghe_da_dat);
 
-// 3. Lấy tất cả ghế trong phòng
+
+// 3. Lấy tất cả ghế trong phòng và NHÓM THEO HÀNG
 $sql_ghe = "SELECT G.MaGhe, G.SoGhe, G.LoaiGhe
              FROM ghe G
              JOIN suatchieu SC ON G.MaPhong = SC.MaPhong
              WHERE SC.MaSuatChieu = '$ma_suat_safe'
-             ORDER BY G.MaGhe"; // Nên sắp xếp theo MaGhe để đảm bảo thứ tự
-             
+             ORDER BY G.SoGhe"; 
+
 $result_ghe = mysqli_query($conn, $sql_ghe);
-$page_title = "Chọn Ghế: " . $ten_phim;
+$ghe_theo_hang = [];
+$max_cols = 0; 
+
+if ($result_ghe) {
+    while ($ghe = mysqli_fetch_assoc($result_ghe)) {
+        if (preg_match('/^([a-zA-Z]+)/', $ghe['SoGhe'], $matches)) {
+            $hang = strtoupper($matches[1]);
+        } else {
+            $hang = 'Z'; 
+        }
+        
+        $ghe_theo_hang[$hang][] = $ghe;
+        $max_cols = max($max_cols, count($ghe_theo_hang[$hang]));
+    }
+}
+ksort($ghe_theo_hang);
+
 ?>
 
 <!DOCTYPE html>
-<html lang="vi">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $page_title; ?></title>
+    <title>2. Chọn Ghế - <?php echo $ten_phim; ?></title>
     <style>
+        /* Định nghĩa màu chủ đạo */
         :root {
-            --primary-red: #d11e3b;
-            --dark-red: #a3182d;
-            --primary-blue: #337ab7;
-            --booked-red: #d9534f;
-            --selected-green: #5cb85c;
-            --background-grey: #f0f0f0;
-            --text-dark: #333;
+            --primary-red: #cc0000; /* Đỏ cho ghế đang chọn và nút */
+            --dark-red: #a30000; /* Giá trị đã được thêm vào */
+            --booked-color: #ffffff; /* MÀU TRẮNG cho ghế Đã Đặt */
+            --selected-color: var(--primary-red); /* MÀU ĐỎ cho ghế Đang Chọn */
+            --available-color: #5cb85c; /* MÀU XANH LÁ cho ghế Chưa Chọn */
+            --text-color-dark: #343a40;
+            --text-color-light: #ffffff;
         }
 
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: var(--background-grey); color: var(--text-dark); }
-        .wrapper { max-width: 1200px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        .btn-back-fixed {
-            position: fixed; 
-            top: 20px; 
-            left: 20px; 
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--primary-red); 
-            color: white;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-color-dark);
+            padding: 20px;
             text-align: center;
-            line-height: 45px;
-            text-decoration: none;
-            font-size: 20px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: background-color 0.3s, transform 0.2s;
-            z-index: 1000;
         }
 
-        .btn-back-fixed:hover {
-            background-color: var(--dark-red);
-            transform: scale(1.05);
+        h1 {
+            color: var(--primary-red);
+            border-bottom: 2px solid var(--primary-red);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
-        .btn-back-fixed span {
-            display: block;
-            line-height: 45px; 
-        }
-
-        .header-bar { 
-            background-color: var(--primary-red); 
-            color: white; 
-            padding: 20px; 
-            border-top-left-radius: 8px; 
-            border-top-right-radius: 8px;            padding-left: 70px; 
-        }
-        .header-bar h1 { margin: 0; font-size: 2em; }
-
-
-        .movie-info { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 1.1em; }
-        .movie-info p { margin: 0; }
-
-        /* --- SEAT MAP --- */
-        .seat-section { padding: 30px 20px; text-align: center; }
-        .screen { background: #555; color: white; padding: 15px; margin-bottom: 30px; font-weight: bold; border-radius: 5px; width: 80%; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
         
+        /* --- KHU VỰC CHỌN GHẾ --- */
+        .seat-map-container {
+            border: 2px solid #ccc; 
+            padding: 20px;
+            border-radius: 8px;
+            background: white;
+            /* ĐIỀU CHỈNH: Kéo dài chiều rộng */
+            width: 90%; 
+            max-width: 1000px; 
+            margin: 20px auto;
+        }
+
         .seat-map-grid {
-            display: inline-grid;
-            grid-template-columns: repeat(15, 1fr); 
-            gap: 5px;
-            margin: 0 auto;
+            display: grid;
+            gap: 8px;
+            width: 100%; 
         }
 
-        .seat-label {
+        .seat {
             display: block; 
-            width: 40px; 
-            height: 40px; 
-            line-height: 40px; 
-            text-align: center; 
-            cursor: pointer; 
-            border: 1px solid var(--text-dark); 
-            border-radius: 4px; 
-            transition: all 0.2s; 
-            font-size: 0.8em; 
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.8em;
             font-weight: bold;
         }
         
-
-        .available { background: #fcfcfc; color: var(--text-dark); border-color: #ccc; }
-        .selected { background: var(--selected-green); color: white; border-color: var(--selected-green); transform: scale(1.05); box-shadow: 0 0 8px rgba(92, 184, 92, 0.5); }
-        .booked { background: var(--booked-red); color: white; cursor: not-allowed; opacity: 0.7; border-color: var(--booked-red); }
-        .booked:hover { transform: none; box-shadow: none; }
-        
-
-        .legend, .summary { 
-            padding: 15px 20px; 
-            background: var(--background-grey); 
-            border-radius: 5px; 
-            margin-top: 30px;
+        /* Ghế Chưa Chọn (AVAILABLE) - MÀU XANH LÁ */
+        .available {
+            background: var(--available-color); 
+            color: var(--text-color-light); 
+            border-color: var(--available-color);
         }
-        .legend-item { display: inline-flex; align-items: center; margin-right: 20px; font-size: 0.9em; }
-        .legend-color { width: 15px; height: 15px; margin-right: 8px; border-radius: 3px; border: 1px solid #ccc; }
-        
-        .summary { margin-top: 20px; padding: 25px 30px; border: 2px solid var(--primary-red); background: #fff; }
-        .summary h3 { margin-top: 0; color: var(--primary-red); font-size: 1.5em; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1.1em; }
-        .summary-row strong { color: var(--dark-red); }
-        
-        .btn-continue {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-red);
+        .available:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        /* Ghế Đang Chọn (SELECTED) - MÀU ĐỎ */
+        .selected {
+            background: var(--selected-color); /* ĐỎ */
+            color: var(--text-color-light); /* Chữ TRẮNG */
+            border: 2px solid var(--selected-color); 
+            transform: scale(1.1);
+        }
+
+        /* Ghế Đã Đặt (BOOKED) - MÀU TRẮNG */
+        .booked {
+            background: var(--booked-color); /* TRẮNG */
+            color: var(--text-color-dark); /* Chữ ĐEN để nhìn rõ */
+            cursor: not-allowed;
+            opacity: 0.8;
+            border: 1px solid #ccc; /* Thêm viền để nhìn rõ trên nền trắng */
+        }
+
+        /* Label Hàng */
+        .row-label {
+            background: #ccc; 
+            border: none; 
+            cursor: default; 
+            color: var(--text-color-dark); 
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .screen {
+            background: #333;
             color: white;
-            border: none;
+            padding: 15px;
+            text-align: center;
+            margin: 20px auto;
+            font-weight: bold;
+            width: 80%;
             border-radius: 5px;
+        }
+
+        /* --- Ô TỔNG TIỀN (SUMMARY BOX) --- */
+        .summary-box {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            width: 90%; 
+            max-width: 1000px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .summary-box h3 {
+            color: var(--primary-red);
+            margin-top: 0;
+        }
+        #total_display {
+            color: var(--primary-red);
             font-size: 1.2em;
             font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 15px;
         }
-        .btn-continue:hover:not(:disabled) { background-color: var(--dark-red); }
-        .btn-continue:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        @media (max-width: 768px) {
-            .movie-info { flex-direction: column; align-items: flex-start; }
-            .movie-info p { margin-bottom: 5px; }
-            .seat-map-grid { grid-template-columns: repeat(10, 1fr); }
-            .seat-label { width: 30px; height: 30px; line-height: 30px; }
-            .header-bar { padding-left: 60px; }
-            .btn-back-fixed {
-                top: 15px; 
-                left: 15px;
-                width: 40px;
-                height: 40px;
-                line-height: 40px;
-                font-size: 18px;
-            }
+        /* Style cho nút */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            transition: background-color 0.2s;
+        }
+
+        #btn-continue {
+            background-color: var(--primary-red);
+            color: white;
+        }
+        #btn-continue:hover:not(:disabled) {
+            background-color: var(--dark-red);
+        }
+        #btn-continue:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button[onclick="window.history.back();"] {
+            background-color: #6c757d; 
+            color: white;
+        }
+        button[onclick="window.history.back();"]:hover {
+            background-color: #5a6268;
         }
     </style>
 </head>
+
 <body>
-    
-    <a href="chon_rap_suat.php?MaPhim=<?php echo urlencode($ma_phim); ?>" class="btn-back-fixed" title="Quay lại chọn suất chiếu">
-        <span>&larr;</span>
-    </a>
+    <h1>🎬 Đặt Vé: <?php echo htmlspecialchars($ten_phim); ?></h1>
+    <p>Rạp: **<?php echo htmlspecialchars($info['TenRap']); ?>** | Phòng: **<?php echo htmlspecialchars($info['TenPhong']); ?>** | Thời gian: **<?php echo date('H:i d/m/Y', strtotime($info['ThoiGianBatDau'])); ?>**</p>
 
-    <div class="wrapper">
-        <div class="header-bar">
-            <h1> <?php echo htmlspecialchars($ten_phim); ?>
-            </h1>
-        </div>
+    <div class="screen">MÀN HÌNH</div>
 
-        <div class="movie-info">
-            <p><strong>Rạp:</strong> <?php echo htmlspecialchars($info['TenRap']); ?> | <strong>Phòng:</strong> <?php echo htmlspecialchars($info['TenPhong']); ?></p>
-            <p><strong>Thời gian:</strong> <?php echo $thoi_gian; ?> | <strong>Giá cơ bản:</strong> <?php echo number_format($gia_ve_co_ban, 0, ',', '.'); ?> VND</p>
-        </div>
-
-        <div class="seat-section">
-            <div class="screen">MÀN HÌNH</div>
-
-            <form method="POST" action="thanh_toan.php">
-                <input type="hidden" name="MaSuatChieu" value="<?php echo htmlspecialchars($ma_suat); ?>">
-                <input type="hidden" name="MaPhim" value="<?php echo htmlspecialchars($ma_phim); ?>">
+    <form method="POST" action="thanh_toan.php">
+        <input type="hidden" name="MaSuatChieu" value="<?php echo htmlspecialchars($ma_suat); ?>">
+        
+        <div class="seat-map-container">
+            <div class="seat-map-grid" style="grid-template-columns: 45px repeat(<?php echo $max_cols; ?>, 1fr);">
                 
-                <div class="seat-map-grid">
+                <?php 
+                // Duyệt qua từng Hàng (A, B, C...)
+                foreach ($ghe_theo_hang as $hang_ghe => $danh_sach_ghe): 
+                ?>
+                    <div class="seat row-label">
+                        <?php echo htmlspecialchars($hang_ghe); ?>
+                    </div>
+
                     <?php 
-                    while ($ghe = mysqli_fetch_assoc($result_ghe)): 
-                        $is_booked = in_array($ghe['MaGhe'], $ghe_da_dat);
+                    foreach ($danh_sach_ghe as $ghe): 
+                        // Kiểm tra ghế này có nằm trong danh sách ghế đã đặt $ghe_da_dat không
+                        $is_booked = in_array($ghe['SoGhe'], $ghe_da_dat); 
                         $class = $is_booked ? 'booked' : 'available';
+                        $price_attr = $gia_ve_co_ban;
                     ?>
-                        <label class="seat-label <?php echo $class; ?>">
+                        <label class="seat <?php echo $class; ?>">
                             <?php if (!$is_booked): ?>
-                                <input type="checkbox" name="selected_seats[]" value="<?php echo htmlspecialchars($ghe['MaGhe']); ?>" 
-                                       style="display: none;" 
-                                       data-price="<?php echo $gia_ve_co_ban; ?>">
+                                <input type="checkbox" name="selected_seats[]" value="<?php echo htmlspecialchars($ghe['MaGhe']); ?>" style="display: none;"
+                                    data-price="<?php echo $price_attr; ?>">
                             <?php endif; ?>
                             <?php echo htmlspecialchars($ghe['SoGhe']); ?>
                         </label>
-                    <?php endwhile; ?>
-                </div>
-
-                <div class="legend">
-                    <div class="legend-item"><span class="legend-color available" style="border-color:#ccc;"></span> Ghế Trống</div>
-                    <div class="legend-item"><span class="legend-color selected" style="background: var(--selected-green); border-color:var(--selected-green);"></span> Đang Chọn</div>
-                    <div class="legend-item"><span class="legend-color booked" style="background: var(--booked-red); border-color:var(--booked-red);"></span> Đã Bán</div>
-                </div>
-
-                <div class="summary">
-                    <h3>Tóm Tắt Đặt Vé</h3>
-                    <div class="summary-row">
-                        <span>Số lượng ghế:</span>
-                        <strong id="seat_count">0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Ghế đã chọn:</span>
-                        <strong id="seats_list">Chưa chọn</strong>
-                    </div>
-                    <div class="summary-row" style="font-size: 1.3em; margin-top: 15px;">
-                        <span>TỔNG TIỀN TẠM TÍNH:</span>
-                        <strong id="total_display" style="color: var(--primary-red);">0 VND</strong>
-                    </div>
-                    <button type="submit" id="btn-continue" class="btn-continue" disabled>
-                        TIẾP TỤC THANH TOÁN
-                    </button>
-                </div>
-            </form>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-    
+        
+        <div class="summary-box">
+            <h3>Tổng Tiền Tạm Tính: <span id="total_display">0</span> VND</h3>
+            <button type="submit" id="btn-continue" disabled>Tiếp tục Thanh toán</button>
+            <button type="button" onclick="window.history.back();">Hủy</button>
+        </div>
+    </form>
+
     <script>
         const totalDisplay = document.getElementById('total_display');
-        const seatCountDisplay = document.getElementById('seat_count');
-        const seatsListDisplay = document.getElementById('seats_list');
         const btnContinue = document.getElementById('btn-continue');
-        let currentTotal = 0;
-        let selectedSeats = [];
+        const seatCheckboxes = document.querySelectorAll('.seat.available input[type="checkbox"]');
+        const pricePerSeat = <?php echo (int)($info['GiaVeCoBan'] ?? 90000); ?>;
 
-        document.querySelectorAll('.seat-label.available').forEach(seatLabel => {
-            const checkbox = seatLabel.querySelector('input[type="checkbox"]');
-            const seatName = seatLabel.textContent.trim(); 
-            const price = parseFloat(checkbox.getAttribute('data-price'));
-
-            seatLabel.addEventListener('click', function(e) {
-                // Ngăn chặn hành vi mặc định của label để kiểm soát việc chuyển đổi
-                e.preventDefault(); 
-                
-                // Đảo trạng thái checkbox
-                checkbox.checked = !checkbox.checked;
-
-                if (checkbox.checked) {
-                    this.classList.remove('available');
-                    this.classList.add('selected');
-                    currentTotal += price;
-                    selectedSeats.push(seatName);
+        function updateTotal() {
+            let selectedCount = 0;
+            seatCheckboxes.forEach(cb => {
+                const label = cb.closest('.seat');
+                if (cb.checked) {
+                    selectedCount++;
+                    // Màu ĐỎ (selected)
+                    label.classList.remove('available');
+                    label.classList.add('selected');
                 } else {
-                    this.classList.remove('selected');
-                    this.classList.add('available');
-                    currentTotal -= price;
-                    selectedSeats = selectedSeats.filter(name => name !== seatName);
+                    // Màu XANH LÁ (available)
+                    label.classList.remove('selected');
+                    label.classList.add('available');
                 }
+            });
+            
+            totalDisplay.textContent = (selectedCount * pricePerSeat).toLocaleString('vi-VN');
+            btnContinue.disabled = selectedCount === 0;
+        }
 
-                // Cập nhật hiển thị
-                seatCountDisplay.textContent = selectedSeats.length;
-                seatsListDisplay.textContent = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn';
-                
-                totalDisplay.textContent = currentTotal.toLocaleString('vi-VN') + ' VND';
-                
-                // Kích hoạt/Vô hiệu hóa nút tiếp tục
-                btnContinue.disabled = selectedSeats.length === 0;
+        seatCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateTotal);
+            
+            // Xử lý click trên ghế đã đặt để ngăn chặn hành vi mặc định
+            cb.closest('.seat').addEventListener('click', function(e) {
+                if (this.classList.contains('booked')) {
+                    e.preventDefault(); 
+                }
             });
         });
+
+        updateTotal();
     </script>
 </body>
+
 </html>
 <?php mysqli_close($conn); ?>

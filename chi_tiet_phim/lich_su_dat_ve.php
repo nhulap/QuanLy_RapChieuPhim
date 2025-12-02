@@ -125,6 +125,7 @@ $result = mysqli_query($conn, $sql);
                 <th>Tổng tiền</th>
                 <th>Thanh toán</th>
                 <th>Thời gian đặt</th>
+                <th>Hoàn Vé</th>
             </tr>
 
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
@@ -135,16 +136,72 @@ $result = mysqli_query($conn, $sql);
                     <td><?= htmlspecialchars($row['TenPhong']) ?></td>
                     <td><?= htmlspecialchars($row['NgayChieu']) ?></td>
                     <td><?= htmlspecialchars($row['GioChieu']) ?></td>
-                    <td><?= htmlspecialchars($row['MaGheDaChon']) ?></td>
+                    <td>
+                    <?php
+                    $ma_ghe_arr = array_map('trim', explode(',', $row['MaGheDaChon']));
+                    $ten_ghe_arr = [];
+                    if (!empty($ma_ghe_arr)) {
+                        // Chuẩn bị danh sách mã ghế hợp lệ (chỉ số, không rỗng)
+                        $ma_ghe_valid = array_filter($ma_ghe_arr, function ($v) {
+                            return $v !== '';
+                        });
+                        if (!empty($ma_ghe_valid)) {
+                            $ma_ghe_in = implode("','", array_map('mysqli_real_escape_string', array_fill(0, count($ma_ghe_valid), $conn), $ma_ghe_valid));
+                            $sql_ghe = "SELECT MaGhe, SoGhe FROM ghe WHERE MaGhe IN ('$ma_ghe_in')";
+                            $result_ghe = mysqli_query($conn, $sql_ghe);
+                            $map_ghe = [];
+                            while ($ghe = mysqli_fetch_assoc($result_ghe)) {
+                                $map_ghe[$ghe['MaGhe']] = $ghe['SoGhe'];
+                            }
+                            // Hiển thị đúng thứ tự, nếu không tìm thấy thì hiển thị lại mã ghế
+                            foreach ($ma_ghe_arr as $mg) {
+                                $ten_ghe_arr[] = $map_ghe[$mg] ?? $mg;
+                            }
+                        } else {
+                            $ten_ghe_arr = $ma_ghe_arr;
+                        }
+                    }
+                    echo htmlspecialchars(implode(', ', $ten_ghe_arr));
+                    ?>
+                </td>
                     <td><?= htmlspecialchars($row['SoLuong']) ?></td>
                     <td><?= number_format($row['TongTien'], 0, ',', '.') ?> VNĐ</td>
                     <td><?= htmlspecialchars($row['TrangThaiThanhToan']) ?></td>
                     <td><?= htmlspecialchars($row['ThoiGianDat']) ?></td>
+                    <td>
+                    <?php
+                    // Kiểm tra vé đã có yêu cầu hoàn tiền chưa
+                    $ma_dat_ve = mysqli_real_escape_string($conn, $row['MaDatVe']);
+                    $sql_check_hoan = "SELECT 1 FROM hoantien WHERE MaDatVe = '$ma_dat_ve' LIMIT 1";
+                    $result_check_hoan = mysqli_query($conn, $sql_check_hoan);
+                    $da_hoan = mysqli_num_rows($result_check_hoan) > 0;
+                    ?>
+                   <?php if ($row['TrangThaiThanhToan'] === 'Thanh Toán Thành Công' && !$da_hoan): ?>
+    <a href="../refundrule/hoantien.php?MaDatVe=<?php echo urlencode($row['MaDatVe']); ?>" 
+       onclick="return confirm('Bạn chắc chắn muốn hoàn vé này?');"
+       style="
+           display: inline-block;
+           padding: 8px 15px;
+           margin: 5px;
+           border-radius: 5px;
+           text-decoration: none;
+           font-weight: bold;
+           cursor: pointer;
+           background-color: #cc0000;
+           color: white; 
+           border: 1px solid #a30000;
+       ">
+       Hoàn vé
+    </a>
+<?php endif; ?>
+                </td>
+
                 </tr>
             <?php endwhile; ?>
         </table>
 
         <a class="back-btn" href="../index.php">⬅ Về trang chủ</a>
+         <a class="back-btn" href="../refundrule/lichsu_hoanve.php"> Xem Lịch Sử Hoàn Vé</a>
     </div>
 
 </body>

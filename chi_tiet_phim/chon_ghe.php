@@ -39,8 +39,6 @@ $sql_dat = "
 $result_dat = mysqli_query($conn, $sql_dat);
 
 if ($result_dat === false) {
-    // Để tránh lỗi nếu bảng hoantien không tồn tại, bạn có thể comment dòng này nếu cần
-    // die("Lỗi truy vấn ghế đã đặt: " . mysqli_error($conn) . " | SQL: " . $sql_dat); 
 }
 
 $ghe_da_dat = [];

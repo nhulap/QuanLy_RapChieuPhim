@@ -4,26 +4,22 @@ require "../Connection.php"; // Kết nối database
 
 // Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
-    // Lưu lại URL hiện tại (bao gồm cả tham số GET) để chuyển hướng quay lại sau khi đăng nhập
     $_SESSION['redirect_url'] = '../datphong/thanh_toan.php?' . http_build_query($_GET);
     header("Location: ../Login&Register/Login.php");
     exit;
 }
 
-// 1. Lấy mã đơn hàng từ URL (MaDatPhong)
 $order_id = $_GET['order'] ?? '';
 
 if (empty($order_id) || !preg_match('/^DP\d{8}$/', $order_id)) {
     die("Lỗi: Mã đơn hàng không hợp lệ. Vui lòng quay lại.");
 }
 
-// Làm sạch mã đơn hàng
+
 $order_id_safe = mysqli_real_escape_string($conn, $order_id);
 $ma_khach_hang_hien_tai = $_SESSION['user_id'];
 $order_data = null;
 
-// 2. Truy vấn chi tiết đơn Đặt Phòng Thuê
-// Đã thêm dpt.MaPhim, dpt.MucDichThue, dpt.TrangThaiXacNhan và LEFT JOIN với phim
 $sql_query = "
     SELECT 
         dpt.MaDatPhong, 
@@ -51,11 +47,10 @@ $result = mysqli_query($conn, $sql_query);
 if ($result && mysqli_num_rows($result) > 0) {
     $order_data = mysqli_fetch_assoc($result);
 } else {
-    // Nếu không tìm thấy đơn hoặc không phải của khách hàng này
     die("Lỗi: Không tìm thấy đơn đặt phòng hoặc bạn không có quyền truy cập đơn hàng này.");
 }
 
-// Chuẩn bị dữ liệu hiển thị
+
 $ma_phong = $order_data['MaPhong'];
 $ten_phong = $order_data['TenPhong'];
 $ten_rap = $order_data['TenRap'];
@@ -67,16 +62,14 @@ $trang_thai_xac_nhan = $order_data['TrangThaiXacNhan'];
 $muc_dich_thue = $order_data['MucDichThue'];
 $ten_phim = $order_data['TenPhim'] ?? 'Không xem phim';
 
-// Giả lập thông tin thanh toán (bạn cần thay thế bằng thông tin thật)
+
 $bank_name = "NGÂN HÀNG ABC";
 $account_number = "0123 4567 8901";
 $account_name = "CONG TY TNHH RAP CHIEU PHIM";
-// Nội dung chuyển khoản mặc định: TT + MaDatPhong
 $transfer_content = "TT " . $order_data['MaDatPhong'];
 
 mysqli_close($conn);
 
-// Thiết lập hiển thị trạng thái
 $status_color = ($trang_thai_xac_nhan === 'Approved') ? 'text-green-600' : 'text-orange-600';
 
 ?>
@@ -247,7 +240,6 @@ $status_color = ($trang_thai_xac_nhan === 'Approved') ? 'text-green-600' : 'text
 
     <!-- Script sao chép nội dung -->
     <script>
-        // Lưu ý: Đã thay thế alert() bằng console.log() và thông báo nhẹ (vì alert không hoạt động tốt trong iframe)
         function copyToClipboard(text) {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -256,7 +248,6 @@ $status_color = ($trang_thai_xac_nhan === 'Approved') ? 'text-green-600' : 'text
             
             try {
                 document.execCommand('copy');
-                // Sử dụng thông báo tùy chỉnh thay cho alert()
                 showToast("Đã sao chép nội dung chuyển khoản: " + text, 'success');
             } catch (err) {
                 showToast("Lỗi: Không thể sao chép nội dung.", 'error');
@@ -267,7 +258,6 @@ $status_color = ($trang_thai_xac_nhan === 'Approved') ? 'text-green-600' : 'text
         }
 
         function showToast(message, type) {
-            // Tạo một div thông báo đơn giản (thay thế alert)
             let toast = document.getElementById('custom-toast');
             if (!toast) {
                 toast = document.createElement('div');
